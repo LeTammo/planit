@@ -33,7 +33,6 @@ class SetupController extends AbstractController
             $user->setUsername($username);
             $user->setRoles(['ROLE_ADMIN']);
 
-            // Hash the password
             $hashedPassword = $passwordHasher->hashPassword($user, $password);
             $user->setPassword($hashedPassword);
 

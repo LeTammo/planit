@@ -1,0 +1,24 @@
+{% extends 'main.html.twig' %}
+
+{% block title %}New Task{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h1 class="text-2xl font-bold mb-6">Create New Task</h1>
+
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.dueDate) }}
+            {{ form_row(form.tags) }}
+
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    Create Task
+                </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
