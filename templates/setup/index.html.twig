@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Initial Setup{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Initial Setup</h1>
+        <p>Create your admin account</p>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Admin Account</button>
+        </form>
+    </div>
+{% endblock %}
