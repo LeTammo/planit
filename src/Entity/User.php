@@ -25,11 +25,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Project::class, orphanRemoval: true)]
+    private Collection $ownedProjects;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: ProjectUser::class, orphanRemoval: true)]
+    private Collection $projectUsers;
+
+    public function __construct()
+    {
+        $this->ownedProjects = new ArrayCollection();
+        $this->projectUsers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -49,13 +58,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
      * @see UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return ucfirst($this->username);
     }
 
     /**
@@ -66,7 +73,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
