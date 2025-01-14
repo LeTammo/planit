@@ -13,11 +13,6 @@ class DashboardController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $user = $this->getUser();
-        $projects = $user->getProjects();
-
-        return $this->render('dashboard/index.html.twig', [
-            'projects' => $projects,
-        ]);
+        return $this->render('dashboard/index.html.twig', []);
     }
 }

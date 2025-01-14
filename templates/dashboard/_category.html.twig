@@ -1,0 +1,14 @@
+<div class="mt-6">
+    <div class="pb-2 flex justify-between items-center">
+        <h2 class="uppercase font-black text-zinc-700">{{ c_category }}</h2>
+    </div>
+    {% for element in c_elements %}
+        {% include 'dashboard/_element.html.twig' with {
+            c_image_path: element.image_path,
+            c_name: element.name,
+            c_link: element.link,
+            c_alt: element.alt,
+            c_count: element.count
+        } %}
+    {% endfor %}
+</div>
