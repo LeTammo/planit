@@ -16,7 +16,7 @@ readonly class SidebarService
     {
         return [
             'projects' => $this->getProjectsData($user),
-            'todos' => $this->getTasksData($user)
+            'tasks' => $this->getTasksData($user),
         ];
     }
 
@@ -38,10 +38,24 @@ readonly class SidebarService
     {
         return [
             [
-                'image_path' => 'images/check.svg',
+                'image_path' => 'images/list-check.svg',
                 'alt' => 'All Tasks',
                 'name' => 'All Tasks',
                 'count' => $user->getTodos()->count(),
+                'link' => '#',
+            ],
+            [
+                'image_path' => 'images/clock.svg',
+                'alt' => 'Open Tasks',
+                'name' => 'Open Tasks',
+                'count' => $user->getTodos()->filter(fn($todo) => !$todo->isDone())->count(),
+                'link' => '#',
+            ],
+            [
+                'image_path' => 'images/check.svg',
+                'alt' => 'Done Tasks',
+                'name' => 'Done Tasks',
+                'count' => $user->getTodos()->filter(fn($todo) => $todo->isDone())->count(),
                 'link' => '#',
             ]
         ];
