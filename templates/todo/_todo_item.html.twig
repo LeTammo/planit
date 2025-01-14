@@ -9,20 +9,20 @@
             <div class="w-full">
                 <div class="w-full pl-2 flex justify-between">
                     <div>
-                    <span class="{{ todo.isDone ? 'line-through text-gray-500' : '' }}">
+                    <span class="font-bold {{ todo.isDone ? 'line-through text-gray-500' : '' }}">
                         {{ todo.title }}
                     </span>
                     </div>
                     {% if todo.description %}
                         <div>
-                            <span class="italic text-gray-400">{{ todo.description }}</span>
+                            <span class="font-extralight text-gray-400">{{ todo.description }}</span>
                         </div>
                     {% endif %}
                 </div>
                 <div class="w-full pl-2 py-2 flex justify-between">
                     <div class="flex items-center">
-                        <img src="{{ asset('images/calendar.svg') }}" alt="Calendar" class="w-4 h-4">
-                        <span class="pl-1">{{ todo.dueDate|date('M d') }}</span>
+                        {% include 'components/icons/calendar.svg.html.twig' with {c_color: '#b45309'} %}
+                        <span class="pl-1 text-amber-700">{{ todo.dueDate|date('M d') }}</span>
                     </div>
                     <div>
                         <span class="text-sm text-gray-500">
