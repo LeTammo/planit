@@ -7,14 +7,14 @@
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold">{{ project.name }}</h1>
             <div class="space-x-4">
-                <a href="{{ path('app_project_edit', {id: project.id}) }}"
-                   class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">
-                    Edit Project
-                </a>
-                <a href="{{ path('app_todo_new', {project: project.id}) }}"
-                   class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
-                    New Task
-                </a>
+                {% include 'components/buttons/_button.html.twig' with {
+                    c_href: path('app_todo_new', {project: project.id}),
+                    c_text: 'Add Task'
+                } %}
+                {% include 'components/buttons/_button.html.twig' with {
+                    c_href: path('app_project_edit', {id: project.id}),
+                    c_text: 'Delete'
+                } %}
             </div>
         </div>
 

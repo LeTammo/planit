@@ -2,9 +2,12 @@
 
 {% block body %}
     <div class="flex h-screen">
-        <div class="w-64 shadow-lg">
-            <div class="flex justify-end p-4 border-b">
-                <span class="h-100 text-gray-400">{{ app.user }}&nbsp;</span>
+        <div class="m-4 w-64 rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
+            <div class="flex justify-between p-4">
+                <div class="flex">
+                    <div class="w-8 h-8 border-2 border-zinc-400 rounded-full bg-zinc-300"></div>
+                    <span class="h-100 text-zinc-500 px-2 py-1">{{ app.user }}</span>
+                </div>
                 <div>
                     <a href="{{ path('app_logout') }}" class="h-100">
                         <img src="{{ asset('images/logout.svg') }}" alt="Logout" class="w-4 h-4 inline-block">
@@ -14,10 +17,10 @@
             <nav class="p-4">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold">Projects</h2>
-                    <a href="{{ path('app_project_new') }}"
-                       class="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600">
-                        New
-                    </a>
+                    {% include 'components/buttons/_button_small.html.twig' with {
+                        c_href: path('app_project_new'),
+                        c_text: '＋'
+                    } %}
                 </div>
                 {% for project in app.user.projects %}
                     <a href="{{ path('app_project_show', {id: project.id}) }}"
