@@ -23,7 +23,7 @@
             } %}
             <a href="{{ path('app_project_new') }}" class="block p-1 hover:bg-gray-100 rounded-md">
                 <div class="flex items-center">
-                    <img src="{{ asset('images/plus_gray.svg') }}" alt="add new project" class="w-4 h-4">
+                    {% include 'components/icons/plus.svg.html.twig' %}
                     <span class="ml-2 text-zinc-400">New Project</span>
                 </div>
             </a>
