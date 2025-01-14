@@ -131,6 +131,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getTodos(): Collection
+    {
+        $todos = new ArrayCollection();
+        foreach ($this->projects as $project) {
+            foreach ($project->getTodos() as $todo) {
+                $todos->add($todo);
+            }
+        }
+
+        return $todos;
+    }
+
     public function __toString(): string
     {
         return ucfirst($this->username);

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Project;
 use App\Entity\User;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -15,32 +16,32 @@ readonly class SidebarService
     {
         return [
             'projects' => $this->getProjectsData($user),
-            'todos' => $this->getTasksData()
+            'todos' => $this->getTasksData($user)
         ];
     }
 
     private function getProjectsData(User $user): array
     {
-        return array_map(function($project) {
+        return array_map(function(Project $project) {
             return [
                 'id' => $project->getId(),
                 'image_path' => 'images/project.svg',
                 'alt' => 'Project',
                 'name' => $project->getName(),
-                'count' => 0,
+                'count' => $project->getTodos()->count(),
                 'link' => $this->urlGenerator->generate('app_project_show', ['id' => $project->getId()]),
             ];
         }, $user->getProjects()->toArray());
     }
 
-    private function getTasksData(): array
+    private function getTasksData(User $user): array
     {
         return [
             [
                 'image_path' => 'images/check.svg',
                 'alt' => 'All Tasks',
                 'name' => 'All Tasks',
-                'count' => 0,
+                'count' => $user->getTodos()->count(),
                 'link' => '#',
             ]
         ];
