@@ -1,0 +1,52 @@
+<div class="border rounded-lg p-4 {{ todo.isDone ? 'bg-gray-50' : 'bg-white' }}">
+    <div class="flex items-start justify-between">
+        <div class="flex items-start space-x-3">
+            <input type="checkbox"
+                   class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    {{ todo.isDone ? 'checked' : '' }}
+                   onchange="window.location.href='{{ path('app_todo_toggle', {id: todo.id}) }}'">
+            <div>
+                <h3 class="font-medium {{ todo.isDone ? 'line-through text-gray-500' : '' }}">
+                    {{ todo.title }}
+                </h3>
+                {% if todo.description %}
+                    <p class="text-gray-600 mt-1">{{ todo.description }}</p>
+                {% endif %}
+                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                    <span>Due: {{ todo.dueDate|date('M d, Y') }}</span>
+                    {% if todo.tags %}
+                        <div class="flex gap-2">
+                            {% for tag in todo.tags %}
+                                <span class="bg-gray-100 px-2 py-1 rounded">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <form action="{{ path('app_todo_delete', {id: todo.id}) }}"
+                  method="post" class="inline">
+                <button type="submit"
+                        class="text-red-400 hover:text-red-600">
+                    Delete
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% if todo.subTodos is not empty %}
+        <div class="ml-8 mt-4 space-y-4">
+            {% for subTodo in todo.subTodos %}
+                {% include 'todo/_todo_item.html.twig' with {todo: subTodo} %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="mt-4 ml-8">
+        <a href="{{ path('app_todo_new', {project: project.id, parent: todo.id}) }}"
+           class="text-blue-500 hover:text-blue-700 text-sm">
+            Add subtask
+        </a>
+    </div>
+</div>

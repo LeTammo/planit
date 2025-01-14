@@ -1,52 +1,58 @@
-<div class="border rounded-lg p-4 {{ todo.isDone ? 'bg-gray-50' : 'bg-white' }}">
-    <div class="flex items-start justify-between">
-        <div class="flex items-start space-x-3">
-            <input type="checkbox"
-                   class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    {{ todo.isDone ? 'checked' : '' }}
-                   onchange="window.location.href='{{ path('app_todo_toggle', {id: todo.id}) }}'">
+<div class="px-2 border-t-2 hover:shadow-inner {{ todo.isDone ? 'bg-gray-50' : '' }}">
+    <a href="{{ path('app_todo_edit', {id: todo.id}) }}">
+        <div class="py-2 flex">
             <div>
-                <h3 class="font-medium {{ todo.isDone ? 'line-through text-gray-500' : '' }}">
-                    {{ todo.title }}
-                </h3>
-                {% if todo.description %}
-                    <p class="text-gray-600 mt-1">{{ todo.description }}</p>
-                {% endif %}
-                <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                    <span>Due: {{ todo.dueDate|date('M d, Y') }}</span>
-                    {% if todo.tags %}
-                        <div class="flex gap-2">
-                            {% for tag in todo.tags %}
-                                <span class="bg-gray-100 px-2 py-1 rounded">{{ tag }}</span>
-                            {% endfor %}
+                <input type="checkbox" {{ todo.isDone ? 'checked' : '' }}
+                       class="mt-1 rounded border-gray-200 text-blue-600 focus:ring-blue-500"
+                       onchange="window.location.href='{{ path('app_todo_toggle', {id: todo.id}) }}'">
+            </div>
+            <div class="w-full">
+                <div class="w-full pl-2 flex justify-between">
+                    <div>
+                    <span class="{{ todo.isDone ? 'line-through text-gray-500' : '' }}">
+                        {{ todo.title }}
+                    </span>
+                    </div>
+                    {% if todo.description %}
+                        <div>
+                            <span class="italic text-gray-400">{{ todo.description }}</span>
                         </div>
                     {% endif %}
                 </div>
+                <div class="w-full pl-2 py-2 flex justify-between">
+                    <div class="flex items-center">
+                        <img src="{{ asset('images/calendar.svg') }}" alt="Calendar" class="w-4 h-4">
+                        <span class="pl-1">{{ todo.dueDate|date('M d') }}</span>
+                    </div>
+                    <div>
+                        <span class="text-sm text-gray-500">
+                            {% if todo.tags %}
+                                {% for tag in todo.tags %}
+                                    <span class="bg-gray-100 px-2 py-1 rounded">{{ tag }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="flex gap-6">
+                        <a href="{{ path('app_todo_new', {project: project.id, parent: todo.id}) }}"
+                           class="text-blue-500 hover:text-blue-700 text-sm">
+                            <div class="flex items-center px-2 hover:bg-emerald-50 rounded hover:shadow-inner text-zinc-400 hover:text-emerald-600">
+                                <div class="w-4 h-4">
+                                    {% include 'components/icons/plus.html.twig' with {c_color_hover: '#059669'} %}
+                                </div>
+                                <span class="pl-2">New Subtask</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% if todo.subTodos is not empty %}
+                    <div class="pl-8 mt-4 space-y-4">
+                        {% for subTodo in todo.subTodos %}
+                            {% include 'todo/_todo_item.html.twig' with {todo: subTodo} %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
-        <div class="flex items-center space-x-2">
-            <form action="{{ path('app_todo_delete', {id: todo.id}) }}"
-                  method="post" class="inline">
-                <button type="submit"
-                        class="text-red-400 hover:text-red-600">
-                    Delete
-                </button>
-            </form>
-        </div>
-    </div>
-
-    {% if todo.subTodos is not empty %}
-        <div class="ml-8 mt-4 space-y-4">
-            {% for subTodo in todo.subTodos %}
-                {% include 'todo/_todo_item.html.twig' with {todo: subTodo} %}
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <div class="mt-4 ml-8">
-        <a href="{{ path('app_todo_new', {project: project.id, parent: todo.id}) }}"
-           class="text-blue-500 hover:text-blue-700 text-sm">
-            Add subtask
-        </a>
-    </div>
+    </a>
 </div>

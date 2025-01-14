@@ -3,34 +3,32 @@
 {% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
-    <div class="space-y-6">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold">{{ project.name }}</h1>
-            <div class="space-x-4">
-                {% include 'components/buttons/_button.html.twig' with {
-                    c_href: path('app_todo_new', {project: project.id}),
-                    c_text: 'Add Task'
-                } %}
-                {% include 'components/buttons/_button.html.twig' with {
-                    c_href: path('app_project_edit', {id: project.id}),
-                    c_text: 'Delete'
-                } %}
-            </div>
+    <div class="max-w-3xl">
+        <div class="pb-12">
+            <h1 class="text-4xl font-bold">{{ project.name }}</h1>
         </div>
-
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-xl font-semibold mb-4">Tasks</h2>
-            {% if project.todos is empty %}
-                <p class="text-gray-500">No tasks yet.</p>
-            {% else %}
-                <div class="space-y-4">
-                    {% for todo in project.todos %}
-                        {% if todo.parent is null %}
-                            {% include 'todo/_todo_item.html.twig' with {todo: todo} %}
-                        {% endif %}
-                    {% endfor %}
-                </div>
+        <div><!--class="space-x-4"-->
+            <div class="px-2 border-t-2 hover:bg-gray-100 hover:shadow-inner">
+                <a href="{{ path('app_todo_new', {project: project.id}) }}">
+                    <div class="py-2 flex items-center">
+                        <img src="{{ asset('images/plus_gray.svg') }}" alt="add new task" class="w-4 h-4">
+                        <span class="ml-2 text-zinc-400">New Task</span>
+                    </div>
+                </a>
+            </div>
+            {% if project.todos %}
+                {% for todo in project.todos %}
+                    {% if todo.parent is null %}
+                        {% include 'todo/_todo_item.html.twig' with {todo: todo} %}
+                    {% endif %}
+                {% endfor %}
             {% endif %}
+        </div>
+        <div class="pt-48 flex justify-end">
+            {% include 'components/buttons/_button.html.twig' with {
+                c_href: path('app_project_edit', {id: project.id}),
+                c_text: 'Delete Project'
+            } %}
         </div>
     </div>
 {% endblock %}
