@@ -36,9 +36,9 @@
                     <div class="flex gap-6">
                         <a href="{{ path('app_todo_new', {project: project.id, parent: todo.id}) }}"
                            class="text-blue-500 hover:text-blue-700 text-sm">
-                            <div class="flex items-center px-2 hover:bg-emerald-50 rounded hover:shadow-inner text-zinc-400 hover:text-emerald-600">
+                            <div class="flex items-center px-2 hover:bg-gray-50 rounded shadow-inner text-zinc-400 hover:text-emerald-500">
                                 <div class="w-4 h-4">
-                                    {% include 'components/icons/plus.html.twig' with {c_color_hover: '#059669'} %}
+                                    {% include 'components/icons/plus.svg.html.twig' with {c_color_hover: '#10B981'} %}
                                 </div>
                                 <span class="pl-2">New Subtask</span>
                             </div>

@@ -1,5 +1,6 @@
+{% set id = "svg-icon-" ~ random() %}
 <svg
-        class="w-4 h-4 svg-icon"
+        class="w-4 h-4 {{ id }}"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="none"
@@ -15,6 +16,6 @@
 </svg>
 {% if c_color_hover is defined %}
     <style>
-        a:hover .svg-icon path {stroke: {{ c_color_hover }};}
+        a:hover .{{ id }} path {stroke: {{ c_color_hover }};}
     </style>
 {% endif %}
