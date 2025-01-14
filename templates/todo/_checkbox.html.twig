@@ -1,0 +1,10 @@
+<div class="m-auto flex w-2/3 items-start justify-between py-4">
+    <div class="w-1/7">
+        <div class="group flex rounded">
+            <input type="checkbox" {{ todo.isDone ? 'checked' : '' }}
+                   class="h-6 w-6 cursor-pointer rounded-full border-emerald-300 bg-emerald-100 text-emerald-600 focus:ring-emerald-200"
+                   onchange="window.location.href='{{ path('app_todo_toggle', {id: todo.id}) }}'"
+            />
+        </div>
+    </div>
+</div>
