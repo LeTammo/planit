@@ -16,6 +16,8 @@ class TodoController extends AbstractController
     #[Route('/todo/new/{project}', name: 'app_todo_new')]
     public function new(Request $request, Project $project, Todo $parent = null, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('access', $project);
+
         $todo = new Todo();
         $todo->setProject($project);
         $todo->setParent($parent);
@@ -40,7 +42,7 @@ class TodoController extends AbstractController
     #[Route('/todo/{id}/edit', name: 'app_todo_edit')]
     public function edit(Request $request, Todo $todo, EntityManagerInterface $entityManager): Response
     {
-        //$this->denyAccessUnlessGranted('edit', $todo->getProject());
+        $this->denyAccessUnlessGranted('access', $todo->getProject());
 
         $form = $this->createForm(TodoType::class, $todo);
         $form->handleRequest($request);
@@ -59,7 +61,7 @@ class TodoController extends AbstractController
     #[Route('/todo/{id}/toggle', name: 'app_todo_toggle', methods: ['GET'])]
     public function toggleStatus(Todo $todo, EntityManagerInterface $entityManager): Response
     {
-        //$this->denyAccessUnlessGranted('edit', $todo->getProject());
+        $this->denyAccessUnlessGranted('access', $todo->getProject());
 
         $todo->setDone(!$todo->isDone());
 
@@ -75,12 +77,12 @@ class TodoController extends AbstractController
     }
 
     #[Route('/todo/{id}/delete', name: 'app_todo_delete', methods: ['POST'])]
-    public function delete(Request $request, Todo $todo, EntityManagerInterface $entityManager): Response
+    public function delete(Todo $todo, EntityManagerInterface $entityManager): Response
     {
-        //if ($this->isCsrfTokenValid('delete_todo_' . $todo->getId(), $request->request->get('_token'))) {
+        $this->denyAccessUnlessGranted('access', $todo->getProject());
+
         $entityManager->remove($todo);
         $entityManager->flush();
-        //}
 
         return $this->redirectToRoute('app_project_show', ['id' => $todo->getProject()->getId()]);
     }
