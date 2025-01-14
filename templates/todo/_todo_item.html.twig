@@ -44,7 +44,7 @@
     {% endif %}
 
     <div class="mt-4 ml-8">
-        <a href="{{ path('app_todo_new_subtask', {parentId: todo.id}) }}"
+        <a href="{{ path('app_todo_new', {project: project.id, parent: todo.id}) }}"
            class="text-blue-500 hover:text-blue-700 text-sm">
             Add subtask
         </a>

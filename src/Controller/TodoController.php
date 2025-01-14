@@ -14,11 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class TodoController extends AbstractController
 {
     #[Route('/todo/new/{project}', name: 'app_todo_new')]
-    //#[IsGranted('edit', 'project')]
-    public function new(Request $request, Project $project, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, Project $project, Todo $parent = null, EntityManagerInterface $entityManager): Response
     {
         $todo = new Todo();
         $todo->setProject($project);
+        $todo->setParent($parent);
 
         $form = $this->createForm(TodoType::class, $todo);
         $form->handleRequest($request);
@@ -33,6 +33,7 @@ class TodoController extends AbstractController
         return $this->render('todo/new.html.twig', [
             'form' => $form,
             'project' => $project,
+            'parent' => $parent,
         ]);
     }
 
@@ -71,31 +72,6 @@ class TodoController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_project_show', ['id' => $todo->getProject()->getId()]);
-    }
-
-    #[Route('/todo/new-subtask/{parentId}', name: 'app_todo_new_subtask')]
-    public function newSubtask(Request $request, Todo $parentTodo, EntityManagerInterface $entityManager): Response
-    {
-        $this->denyAccessUnlessGranted('edit', $parentTodo->getProject());
-
-        $todo = new Todo();
-        $todo->setProject($parentTodo->getProject());
-        $todo->setParent($parentTodo);
-
-        $form = $this->createForm(TodoType::class, $todo);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($todo);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_project_show', ['id' => $todo->getProject()->getId()]);
-        }
-
-        return $this->render('todo/new_subtask.html.twig', [
-            'form' => $form,
-            'parentTodo' => $parentTodo,
-        ]);
     }
 
     #[Route('/todo/{id}/delete', name: 'app_todo_delete', methods: ['POST'])]

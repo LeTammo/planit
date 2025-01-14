@@ -3,10 +3,12 @@
 {% block body %}
     <div class="flex h-screen">
         <div class="w-64 shadow-lg">
-            <div class="p-4 border-b">
-                <span class="text-gray-400">{{ app.user }}</span>
+            <div class="flex justify-end p-4 border-b">
+                <span class="h-100 text-gray-400">{{ app.user }}&nbsp;</span>
                 <div>
-                    <a href="{{ path('app_logout') }}">Logout</a>
+                    <a href="{{ path('app_logout') }}" class="h-100">
+                        <img src="{{ asset('images/logout.svg') }}" alt="Logout" class="w-4 h-4 inline-block">
+                    </a>
                 </div>
             </div>
             <nav class="p-4">
