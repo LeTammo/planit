@@ -1,5 +1,5 @@
 <input type="checkbox" {{ todo.isDone ? 'checked' : '' }}
-       class="h-6 w-6 cursor-pointer rounded-2xl border-emerald-100 bg-emerald-50 text-emerald-600
+       class="h-6 w-6 cursor-pointer rounded-full border-emerald-100 bg-emerald-50 text-emerald-600
               ring-2 ring-emerald-100 ring-offset-2 ring-offset-white focus:ring-emerald-600"
        onchange="window.location.href='{{ path('app_todo_toggle', {id: todo.id}) }}'"
 />
