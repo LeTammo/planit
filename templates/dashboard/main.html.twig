@@ -33,7 +33,41 @@
             } %}
         </nav>
     </div>
-    <div class="flex-1 p-8">
+    <div class="flex-1 p-4">
+        <div class="mb-4 px-12 py-3 rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
+            <div class="flex items-center justify-between">
+                <div class="flex items center gap-12">
+                    <div class="flex items-center">
+                        {% include 'components/icons/plus.svg.html.twig' %}
+                        <span class="ml-2">Tasks</span>
+                    </div>
+                    <div class="flex items-center">
+                        {% include 'components/icons/pen_square.svg.html.twig' %}
+                        <span class="ml-2">Kanban</span>
+                    </div>
+                    <div class="flex items-center">
+                        {% include 'components/icons/calendar.svg.html.twig' %}
+                        <span class="ml-2">Calendar</span>
+                    </div>
+                    <div class="flex items center">
+                        <input type="text"
+                               class="p-2 rounded-md text-zinc-500 shadow-inner border-1 border-zinc-100"
+                               placeholder="Search...">
+                    </div>
+                </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('app_admin') }}" class="p-2 rounded-md text-zinc-500">
+                        <div class="flex items-center">
+                            {% include 'components/icons/pen_square.svg.html.twig' %}
+                            <span class="ml-2">Admin</span>
+                        </div>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div>
+            {% include 'components/_flash_messages.html.twig' %}
+        </div>
         {% block content %}{% endblock %}
     </div>
 </div>

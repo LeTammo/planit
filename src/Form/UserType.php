@@ -22,8 +22,9 @@ class UserType extends AbstractType
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
+                'required' => false,
+                'attr' => ['placeholder' => 'Leave blank to keep current password'],
                 'constraints' => [
-                    new NotBlank(['message' => 'Please enter a password']),
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
@@ -31,6 +32,7 @@ class UserType extends AbstractType
                     ]),
                 ],
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
