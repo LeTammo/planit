@@ -1,7 +1,7 @@
 <div class="px-2 border-t-2 hover:shadow-inner {{ todo.isDone ? 'bg-gray-50' : '' }}">
     <a href="{{ path('app_todo_edit', {id: todo.id}) }}">
         <div class="py-2 flex">
-            <div class="flex items-center me-4">
+            <div class="h-full m-auto px-4 flex items-center">
                 {% include 'todo/_checkbox.html.twig' %}
             </div>
             <div class="w-full">
@@ -50,7 +50,6 @@
                 {% if todo.subTodos is not empty %}
                     <div class="pl-8 mt-4 space-y-4">
                         {% for subTodo in todo.subTodos %}
-                            {% include 'todo/_todo_item.html.twig' with {todo: subTodo} %}
                         {% endfor %}
                     </div>
                 {% endif %}
