@@ -21,13 +21,13 @@ class Project
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'projects')]
     private Collection $users;
 
-    #[ORM\OneToMany(targetEntity: Todo::class, mappedBy: 'project', orphanRemoval: true)]
-    private Collection $todos;
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'project', orphanRemoval: true)]
+    private Collection $tasks;
 
     public function __construct(User $creator)
     {
         $this->users = new ArrayCollection();
-        $this->todos = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
 
         $this->addUser($creator);
     }
@@ -70,26 +70,26 @@ class Project
         return $this;
     }
 
-    public function getTodos(): Collection
+    public function getTasks(): Collection
     {
-        return $this->todos;
+        return $this->tasks;
     }
 
-    public function addTodo(Todo $todo): static
+    public function addTask(Task $task): static
     {
-        if (!$this->todos->contains($todo)) {
-            $this->todos->add($todo);
-            $todo->setProject($this);
+        if (!$this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->setProject($this);
         }
 
         return $this;
     }
 
-    public function removeTodo(Todo $todo): static
+    public function removeTask(Task $task): static
     {
-        if ($this->todos->removeElement($todo)) {
-            if ($todo->getProject() === $this) {
-                $todo->setProject(null);
+        if ($this->tasks->removeElement($task)) {
+            if ($task->getProject() === $this) {
+                $task->setProject(null);
             }
         }
 

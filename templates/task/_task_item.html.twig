@@ -1,41 +1,41 @@
-<div class="px-2 border-t-2 hover:shadow-inner {{ todo.isDone ? 'bg-gray-50' : '' }}">
-    <a href="{{ path('app_todo_edit', {id: todo.id}) }}">
+<div class="px-2 border-t-2 hover:shadow-inner {{ task.isDone ? 'bg-gray-50' : '' }}">
+    <a href="{{ path('app_task_edit', {id: task.id}) }}">
         <div class="py-2 flex">
             <div class="h-full m-auto px-4 flex items-center">
-                {% include 'todo/_checkbox.html.twig' %}
+                {% include 'task/_checkbox.html.twig' %}
             </div>
             <div class="w-full">
                 <div class="w-full pl-2 flex justify-between">
                     <div>
-                    <span class="font-bold {{ todo.isDone ? 'line-through text-gray-300' : '' }}">
-                        {{ todo.title }}
+                    <span class="font-bold {{ task.isDone ? 'line-through text-gray-300' : '' }}">
+                        {{ task.title }}
                     </span>
                     </div>
-                    {% if todo.description and not todo.isDone %}
+                    {% if task.description and not task.isDone %}
                         <div>
-                            <span class="font-extralight text-gray-400">{{ todo.description }}</span>
+                            <span class="font-extralight text-gray-400">{{ task.description }}</span>
                         </div>
                     {% endif %}
                 </div>
                 <div class="w-full pl-2 py-2 flex justify-between">
                     <div class="flex items-center">
-                        {% include 'components/icons/calendar.svg.html.twig' with {c_color: todo.isDone ? '' : '#b45309'} %}
-                        <span class="pl-1  {{ todo.isDone ? 'line-through text-gray-300' : 'text-amber-700' }}">
-                            {{ todo.dueDate|date('M d') }}
+                        {% include 'components/icons/calendar.svg.html.twig' with {c_color: task.isDone ? '' : '#b45309'} %}
+                        <span class="pl-1  {{ task.isDone ? 'line-through text-gray-300' : 'text-amber-700' }}">
+                            {{ task.dueDate|date('M d') }}
                         </span>
                     </div>
                     <div>
                         <span class="text-sm text-gray-500">
-                            {% if todo.tags %}
-                                {% for tag in todo.tags %}
+                            {% if task.tags %}
+                                {% for tag in task.tags %}
                                     <span class="bg-gray-100 px-2 py-1 rounded">{{ tag }}</span>
                                 {% endfor %}
                             {% endif %}
                         </span>
                     </div>
-                    {% if not todo.isDone %}
+                    {% if not task.isDone %}
                         <div class="flex gap-6">
-                            <a href="{{ path('app_todo_new', {project: project.id, parent: todo.id}) }}"
+                            <a href="{{ path('app_task_new', {project: project.id, parent: task.id}) }}"
                                class="text-blue-500 hover:text-blue-700 text-sm">
                                 <div class="flex items-center px-2 hover:bg-gray-50 rounded shadow-inner text-zinc-400 hover:text-emerald-500">
                                     <div class="w-4 h-4">
@@ -47,9 +47,9 @@
                         </div>
                     {% endif %}
                 </div>
-                {% if todo.subTodos is not empty %}
+                {% if task.subTasks is not empty %}
                     <div class="pl-8 mt-4 space-y-4">
-                        {% for subTodo in todo.subTodos %}
+                        {% for subTask in task.subTasks %}
                         {% endfor %}
                     </div>
                 {% endif %}

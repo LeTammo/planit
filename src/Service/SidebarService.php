@@ -28,7 +28,7 @@ readonly class SidebarService
                 'image_path' => 'images/project.svg',
                 'alt' => 'Project',
                 'name' => $project->getName(),
-                'count' => $project->getTodos()->count(),
+                'count' => $project->getTasks()->count(),
                 'link' => $this->urlGenerator->generate('app_project_show', ['id' => $project->getId()]),
             ];
         }, $user->getProjects()->toArray());
@@ -41,21 +41,21 @@ readonly class SidebarService
                 'image_path' => 'images/list-check.svg',
                 'alt' => 'All Tasks',
                 'name' => 'All Tasks',
-                'count' => $user->getTodos()->count(),
+                'count' => $user->getTasks()->count(),
                 'link' => '#',
             ],
             [
                 'image_path' => 'images/clock.svg',
                 'alt' => 'Open Tasks',
                 'name' => 'Open Tasks',
-                'count' => $user->getTodos()->filter(fn($todo) => !$todo->isDone())->count(),
+                'count' => $user->getTasks()->filter(fn($task) => !$task->isDone())->count(),
                 'link' => '#',
             ],
             [
                 'image_path' => 'images/check.svg',
                 'alt' => 'Done Tasks',
                 'name' => 'Done Tasks',
-                'count' => $user->getTodos()->filter(fn($todo) => $todo->isDone())->count(),
+                'count' => $user->getTasks()->filter(fn($task) => $task->isDone())->count(),
                 'link' => '#',
             ]
         ];

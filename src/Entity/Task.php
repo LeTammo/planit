@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\TodoRepository;
+use App\Repository\TaskRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: TodoRepository::class)]
-class Todo
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
+class Task
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,19 +31,19 @@ class Todo
     #[ORM\Column(nullable: true)]
     private ?bool $isDone = null;
 
-    #[ORM\ManyToOne(inversedBy: 'todos')]
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subTodos')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subTasks')]
     private ?self $parent = null;
 
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent', orphanRemoval: true)]
-    private Collection $subTodos;
+    private Collection $subTasks;
 
     public function __construct()
     {
-        $this->subTodos = new ArrayCollection();
+        $this->subTasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -135,26 +135,26 @@ class Todo
         return $this;
     }
 
-    public function getSubTodos(): Collection
+    public function getSubTasks(): Collection
     {
-        return $this->subTodos;
+        return $this->subTasks;
     }
 
-    public function addSubTodo(Todo $subTodo): static
+    public function addSubTask(Task $subTask): static
     {
-        if (!$this->subTodos->contains($subTodo)) {
-            $this->subTodos->add($subTodo);
-            $subTodo->setParent($this);
+        if (!$this->subTasks->contains($subTask)) {
+            $this->subTasks->add($subTask);
+            $subTask->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeSubTodo(Todo $subTodo): static
+    public function removeSubTask(Task $subTask): static
     {
-        if ($this->subTodos->removeElement($subTodo)) {
-            if ($subTodo->getParent() === $this) {
-                $subTodo->setParent(null);
+        if ($this->subTasks->removeElement($subTask)) {
+            if ($subTask->getParent() === $this) {
+                $subTask->setParent(null);
             }
         }
 

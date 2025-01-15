@@ -131,16 +131,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getTodos(): Collection
+    public function getTasks(): Collection
     {
-        $todos = new ArrayCollection();
+        $tasks = new ArrayCollection();
         foreach ($this->projects as $project) {
-            foreach ($project->getTodos() as $todo) {
-                $todos->add($todo);
+            foreach ($project->getTasks() as $task) {
+                $tasks->add($task);
             }
         }
 
-        return $todos;
+        return $tasks;
     }
 
     public function __toString(): string

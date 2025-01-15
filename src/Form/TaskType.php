@@ -2,13 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\Todo;
+use App\Entity\Task;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TodoType extends AbstractType
+class TaskType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -45,7 +45,7 @@ class TodoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Todo::class,
+            'data_class' => Task::class,
         ]);
     }
 }
