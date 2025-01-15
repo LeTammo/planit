@@ -1,0 +1,16 @@
+<div>
+    {% if c_label is defined and c_label %}
+        <label for="{{ c_id }}" class="block text-sm font-medium text-gray-700">{{ c_label }}</label>
+    {% else %}
+        <label for="{{ c_id }}" class="sr-only">{{ c_placeholder|default(c_name|title) }}</label>
+    {% endif %}
+    <input
+            id="{{ c_id }}"
+            name="{{ c_name }}"
+            type="{{ c_type|default('text') }}"
+            {% if c_placeholder is defined %}placeholder="{{ c_placeholder }}"{% endif %}
+            {% if c_required|default(false) %}required{% endif %}
+            {% if c_value is defined and c_value %}value="{{ c_value }}"{% endif %}
+            class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm {{ c_additional_classes|default('') }}"
+    >
+</div>

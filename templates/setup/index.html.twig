@@ -3,22 +3,35 @@
 {% block title %}Initial Setup{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <h1>Initial Setup</h1>
-        <p>Create your admin account</p>
+    <div class="min-h-screen bg-zinc-100 flex items-center justify-center">
+        {% set form_content %}
+            <form method="post" class="space-y-6">
+                {% include 'components/form/_input.html.twig' with {
+                    c_id: 'username',
+                    c_name: 'username',
+                    c_type: 'text',
+                    c_label: 'Username',
+                    c_required: true
+                } %}
 
-        <form method="post">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required class="form-control">
-            </div>
+                {% include 'components/form/_input.html.twig' with {
+                    c_id: 'password',
+                    c_name: 'password',
+                    c_type: 'password',
+                    c_label: 'Password',
+                    c_required: true
+                } %}
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required class="form-control">
-            </div>
+                {% include 'components/form/_button.html.twig' with {
+                    c_label: 'Create Admin Account'
+                } %}
+            </form>
+        {% endset %}
 
-            <button type="submit" class="btn btn-primary">Create Admin Account</button>
-        </form>
+        {% include 'components/form/_container.html.twig' with {
+            c_title: 'Initial Setup',
+            c_subtitle: 'Create your admin account',
+            c_content: form_content
+        } %}
     </div>
 {% endblock %}

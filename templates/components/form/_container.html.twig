@@ -1,0 +1,15 @@
+<div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
+    {% if c_title is defined and c_title %}
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                {{ c_title }}
+            </h2>
+            {% if c_subtitle is defined and c_subtitle %}
+                <p class="mt-2 text-center text-gray-600">
+                    {{ c_subtitle }}
+                </p>
+            {% endif %}
+        </div>
+    {% endif %}
+    {{ c_content|raw }}
+</div>
