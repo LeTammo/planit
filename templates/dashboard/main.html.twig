@@ -68,7 +68,14 @@
         <div>
             {% include 'components/_flash_messages.html.twig' %}
         </div>
-        {% block content %}{% endblock %}
+        <div class="flex">
+            <div class="flex-1 max-w-3xl">
+                {% block content %}{% endblock %}
+            </div>
+            <div id="forms">
+                test
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
