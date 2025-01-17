@@ -1,5 +1,5 @@
 <input type="checkbox" {{ task.isDone ? 'checked' : '' }}
-       class="h-6 w-6 cursor-pointer rounded-full border-emerald-100 bg-emerald-50 text-emerald-600
+       class="h-4 w-4 cursor-pointer rounded-full border-emerald-100 bg-emerald-50 text-emerald-600
               ring-2 ring-emerald-100 ring-offset-2 ring-offset-white focus:ring-emerald-600"
        onchange="window.location.href='{{ path('app_task_toggle', {id: task.id}) }}'"
 />

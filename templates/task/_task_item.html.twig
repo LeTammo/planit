@@ -1,34 +1,35 @@
-<div class="px-2 border-t-2 hover:shadow-inner {{ task.isDone ? 'bg-gray-50' : '' }}">
-    <a href="{{ path('app_task_edit', {id: task.id}) }}">
-        <div class="py-2 flex">
-            <div class="h-full m-auto px-4 flex items-center">
-                {% if task.subTasks is empty %}
-                    {% include 'task/_checkbox.html.twig' %}
-                {% else %}
-                    <div class="w-6 h-6"></div>
-                {% endif %}
-            </div>
-            <div class="w-full">
-                <div class="w-full pl-2 flex justify-between">
-                    <div>
-                    <span class="font-bold {{ task.isDone ? 'line-through text-gray-300' : '' }}">
-                        {{ task.title }}
-                    </span>
-                    </div>
-                    {% if task.description and not task.isDone %}
-                        <div>
-                            <span class="font-extralight text-gray-400">{{ task.description }}</span>
-                        </div>
+<div class="py-1">
+    <div class="px-2 rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)] {{ task.isDone ? 'bg-gray-100' : 'bg-white' }}">
+        <a href="{{ path('app_task_edit', {id: task.id}) }}">
+            <div class="py-2 flex">
+                <div class="h-full m-auto px-4 flex items-center">
+                    {% if task.subTasks is empty %}
+                        {% include 'task/_checkbox.html.twig' %}
+                    {% else %}
+                        {% include 'task/_progressbox.html.twig' %}
                     {% endif %}
                 </div>
-                <div class="w-full pl-2 py-2 flex justify-between">
-                    <div class="flex items-center">
-                        {% include 'components/icons/calendar.svg.html.twig' with {c_color: task.isDone ? '' : '#b45309'} %}
-                        <span class="pl-1  {{ task.isDone ? 'line-through text-gray-300' : 'text-amber-700' }}">
-                            {{ task.dueDate|date('M d') }}
+                <div class="w-full">
+                    <div class="w-full pl-2 flex justify-between">
+                        <div>
+                        <span class="font-bold {{ task.isDone ? 'line-through text-gray-300' : '' }}">
+                            {{ task.title }}
                         </span>
+                        </div>
+                        <div class="flex items-center">
+                            {% include 'components/icons/calendar.svg.html.twig' with {c_color: task.isDone ? '' : '#b45309'} %}
+                            <span class="pl-1  {{ task.isDone ? 'line-through text-gray-300' : 'text-amber-700' }}">
+                                {{ task.dueDate|date('M d') }}
+                            </span>
+                        </div>
                     </div>
-                    <div>
+                    <div class="hidden w-full pl-2 py-2 flex justify-between">
+                        {% if task.description and not task.isDone %}
+                            <div>
+                                <span class="font-extralight text-gray-400">{{ task.description }}</span>
+                            </div>
+                        {% endif %}
+                        <div>
                         <span class="text-sm text-gray-500">
                             {% if task.tags %}
                                 {% for tag in task.tags %}
@@ -36,29 +37,23 @@
                                 {% endfor %}
                             {% endif %}
                         </span>
-                    </div>
-                    {% if not task.isDone and task.parent is empty %}
-                        <div class="flex gap-6">
-                            <a href="{{ path('app_task_new', {project: project.id, parent: task.id}) }}"
-                               class="text-blue-500 hover:text-blue-700 text-sm">
-                                <div class="flex items-center px-2 hover:bg-gray-50 rounded shadow-inner text-zinc-400 hover:text-emerald-500">
-                                    <div class="w-4 h-4">
-                                        {% include 'components/icons/plus.svg.html.twig' with {c_color_hover: '#10B981'} %}
-                                    </div>
-                                    <span class="pl-2">New Subtask</span>
-                                </div>
-                            </a>
                         </div>
-                    {% endif %}
-                </div>
-                {% if task.subTasks is not empty %}
-                    <div class="pl-8 mt-4 space-y-4">
-                        {% for subTask in task.subTasks %}
-                            {% include 'task/_task_item.html.twig' with { 'task': subTask, 'project': project } %}
-                        {% endfor %}
+                        {% if not task.isDone and task.parent is empty %}
+                            <div class="flex gap-6">
+                                <a href="{{ path('app_task_new', {project: project.id, parent: task.id}) }}"
+                                   class="text-blue-500 hover:text-blue-700 text-sm">
+                                    <div class="flex items-center px-2 hover:bg-gray-50 rounded shadow-inner text-zinc-400 hover:text-emerald-500">
+                                        <div class="w-4 h-4">
+                                            {% include 'components/icons/plus.svg.html.twig' with {c_color_hover: '#10B981'} %}
+                                        </div>
+                                        <span class="pl-2">New Subtask</span>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+    </div>
 </div>

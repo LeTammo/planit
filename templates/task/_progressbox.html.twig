@@ -1,0 +1,7 @@
+<div class="h-4 w-4 flex justify-center items-center {{ task.isDone ? 'bg-emerald-600' : 'bg-emerald-50' }}
+            cursor-pointer rounded-full border-emerald-100 bg-emerald-50 text-emerald-600
+            ring-2 ring-emerald-100 ring-offset-2 ring-offset-white focus:ring-emerald-600">
+    <div class="text-[9px] font-bold {{ task.isDone ? 'text-white' : 'text-emerald-600' }}">
+{{ task.doneSubTasks|length }}/{{ task.subTasks|length }}
+    </div>
+</div>

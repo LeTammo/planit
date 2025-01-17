@@ -112,7 +112,17 @@ class Task
 
     public function isDone(): ?bool
     {
-        return $this->isDone;
+        if ($this->subTasks->isEmpty()) {
+            return $this->isDone;
+        }
+
+        foreach ($this->subTasks as $subTask) {
+            if (!$subTask->isDone()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function setDone(bool $isDone): static
@@ -170,6 +180,16 @@ class Task
         }
 
         return $this;
+    }
+
+    public function getDoneSubTasks(): Collection
+    {
+        return $this->subTasks->filter(fn (Task $task) => $task->isDone());
+    }
+
+    public function getUndoneSubTasks(): Collection
+    {
+        return $this->subTasks->filter(fn (Task $task) => !$task->isDone());
     }
 
     public function __toString(): string
