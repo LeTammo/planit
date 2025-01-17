@@ -13,8 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task/new/{project}', name: 'app_task_new')]
-    public function new(Request $request, Project $project, Task $parent = null, EntityManagerInterface $entityManager): Response
+    #[Route('/task/new/{project}/{parent?}', name: 'app_task_new')]
+    public function new(Request $request, Project $project, ?Task $parent = null, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('access', $project);
 
