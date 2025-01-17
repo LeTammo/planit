@@ -77,7 +77,18 @@ class Task
 
     public function getDueDate(): ?\DateTimeInterface
     {
-        return $this->dueDate;
+        if ($this->subTasks->isEmpty()) {
+            return $this->dueDate;
+        }
+
+        $latestDueDate = null;
+        foreach ($this->subTasks as $subTask) {
+            if ($subTask->getDueDate() > $latestDueDate) {
+                $latestDueDate = $subTask->getDueDate();
+            }
+        }
+
+        return $latestDueDate;
     }
 
     public function setDueDate(?\DateTimeInterface $dueDate): static

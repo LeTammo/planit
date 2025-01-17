@@ -2,7 +2,11 @@
     <a href="{{ path('app_task_edit', {id: task.id}) }}">
         <div class="py-2 flex">
             <div class="h-full m-auto px-4 flex items-center">
-                {% include 'task/_checkbox.html.twig' %}
+                {% if task.subTasks is empty %}
+                    {% include 'task/_checkbox.html.twig' %}
+                {% else %}
+                    <div class="w-6 h-6"></div>
+                {% endif %}
             </div>
             <div class="w-full">
                 <div class="w-full pl-2 flex justify-between">
@@ -33,7 +37,7 @@
                             {% endif %}
                         </span>
                     </div>
-                    {% if not task.isDone %}
+                    {% if not task.isDone and task.parent is empty %}
                         <div class="flex gap-6">
                             <a href="{{ path('app_task_new', {project: project.id, parent: task.id}) }}"
                                class="text-blue-500 hover:text-blue-700 text-sm">
@@ -50,6 +54,7 @@
                 {% if task.subTasks is not empty %}
                     <div class="pl-8 mt-4 space-y-4">
                         {% for subTask in task.subTasks %}
+                            {% include 'task/_task_item.html.twig' with { 'task': subTask, 'project': project } %}
                         {% endfor %}
                     </div>
                 {% endif %}
