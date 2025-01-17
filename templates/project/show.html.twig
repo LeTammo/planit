@@ -7,7 +7,7 @@
         <div class="pb-12 flex justify-between items-center">
             <h1 class="pl-2 text-4xl font-bold">{{ project.name }}</h1>
             <a href="{{ path('app_project_edit', {id: project.id}) }}">
-                <div class="w-4 h-4">
+                <div class="mr-4 w-4 h-4">
                     {% include 'components/icons/pen_square.svg.html.twig' with {
                         c_size: 'w-6 h-6',
                         c_color_hover: '#0284c7'
