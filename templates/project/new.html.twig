@@ -10,7 +10,21 @@
             {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
             {{ form_row(form.name) }}
 
-            <div class="flex justify-end">
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Project Members</label>
+                <div class="user-selection-grid">
+                    {% for user in form.users.vars.choices %}
+                        <div class="user-select-button cursor-pointer px-2 py-1 rounded-md border border-gray-300 hover:border-blue-500 {% if user.data in form.users.vars.data %}active{% endif %}"
+                             data-user-id="{{ user.value }}"
+                             onclick="toggleUser(this)">
+                            {{ user.label }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div style="display: none;">{{ form_widget(form.users) }}</div> {# Hidden original select field #}
+            </div>
+
+            <div class="flex justify-end mt-6">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Create Project
                 </button>
@@ -18,4 +32,46 @@
             {{ form_end(form) }}
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSelectedUsers();
+        });
+
+        function toggleUser(element) {
+            element.classList.toggle('active');
+            updateSelectedUsers();
+        }
+
+        function updateSelectedUsers() {
+            const select = document.querySelector('select[name="project[users][]"]');
+            const activeButtons = document.querySelectorAll('.user-select-button.active');
+
+            select.selectedOptions = null;
+
+            Array.from(activeButtons).forEach(button => {
+                const userId = button.dataset.userId;
+                const option = select.querySelector(`option[value="${userId}"]`);
+                if (option) {
+                    option.selected = true;
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .user-select-button {
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .user-select-button.active {
+            background-color: rgb(59, 130, 246);
+            color: white;
+            border-color: rgb(59, 130, 246);
+        }
+
+        .user-select-button:hover {
+            transform: translateY(-1px);
+        }
+    </style>
 {% endblock %}
