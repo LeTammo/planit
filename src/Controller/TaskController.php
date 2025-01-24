@@ -48,6 +48,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($task);
             $entityManager->flush();
             return $this->redirectToRoute('app_project_show', ['id' => $task->getProject()->getId()]);
         }
