@@ -1,40 +1,50 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/theme-switch.css') }}">
+{% endblock %}
+
 {% block body %}
 <div class="flex h-screen">
-    <div class="m-4 w-64 bg-white rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
-        <div class="flex items-center justify-between p-4">
-            <div class="flex items-center">
-                <div class="w-8 rounded-full bg-zinc-300">
-                    <img src="{{ asset('images/me_smol.jpg') }}" alt="Profile Picture" class="h-8 rounded-full">
-                </div>
-                <span class="font-extralight text-zinc-500 px-2">{{ app.user }}</span>
-            </div>
-            <div>
-                <a href="{{ path('app_logout') }}">
-                    <img src="{{ asset('images/logout.svg') }}" alt="Logout" class="w-4 h-4">
-                </a>
-            </div>
-        </div>
-        <nav class="p-4">
-            {% include 'dashboard/_category.html.twig' with {
-                c_category: 'Projects',
-                c_elements: main_data.projects
-            } %}
-            <a href="{{ path('app_project_new') }}" class="block p-1 hover:bg-gray-100 rounded-md">
+    <div class="m-4 w-64 flex flex-col justify-between bg-white dark:bg-zinc-600 rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
+        <div>
+            <div class="flex items-center justify-between p-4">
                 <div class="flex items-center">
-                    {% include 'components/icons/plus.svg.html.twig' %}
-                    <span class="ml-2 text-zinc-400">New Project</span>
+                    <div class="w-8 rounded-full bg-zinc-300">
+                        <img src="{{ asset('images/me_smol.jpg') }}" alt="Profile Picture" class="h-8 rounded-full">
+                    </div>
+                    <span class="font-extralight text-zinc-500 dark:text-zinc-50 px-2">{{ app.user }}</span>
                 </div>
-            </a>
-            {% include 'dashboard/_category.html.twig' with {
-                c_category: 'Tasks',
-                c_elements: main_data.tasks
-            } %}
-        </nav>
+                <div>
+                    <a href="{{ path('app_logout') }}">
+                        <img src="{{ asset('images/logout.svg') }}" alt="Logout" class="w-4 h-4">
+                    </a>
+                </div>
+            </div>
+            <nav class="p-4">
+                {% include 'dashboard/_category.html.twig' with {
+                    c_category: 'Projects',
+                    c_elements: main_data.projects
+                } %}
+                <a href="{{ path('app_project_new') }}" class="block p-1 hover:bg-gray-100 dark:hover:bg-zinc-500 rounded-md">
+                    <div class="flex items-center">
+                        {% include 'components/icons/plus.svg.html.twig' %}
+                        <span class="ml-2 text-zinc-400">New Project</span>
+                    </div>
+                </a>
+                {% include 'dashboard/_category.html.twig' with {
+                    c_category: 'Tasks',
+                    c_elements: main_data.tasks
+                } %}
+            </nav>
+        </div>
+        <div class="p-4">
+            {% include 'components/buttons/_darklight_switch.html.twig' %}
+            </div>
     </div>
     <div class="flex-1 p-4">
-        <div class="mb-4 px-12 py-3 bg-white rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
+        <div class="mb-4 px-12 py-3 bg-white dark:bg-zinc-600 rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
             <div class="flex items-center justify-between">
                 <div class="flex items center gap-12">
                     <div class="flex items-center">
@@ -51,12 +61,12 @@
                     </div>
                     <div class="flex items center">
                         <input type="text"
-                               class="p-2 rounded-md text-zinc-500 shadow-inner border-1 border-zinc-100"
+                               class="p-2 rounded-md text-zinc-500 dark:bg-zinc-700 shadow-inner border-1 border-zinc-100"
                                placeholder="Search...">
                     </div>
                 </div>
                 {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('app_admin') }}" class="p-2 rounded-md text-zinc-500">
+                    <a href="{{ path('app_admin') }}" class="p-2 rounded-md text-zinc-500 dark:text-zinc-300">
                         <div class="flex items-center">
                             {% include 'components/icons/pen_square.svg.html.twig' %}
                             <span class="ml-2">Admin</span>
