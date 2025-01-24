@@ -19,7 +19,7 @@
                         <div class="flex items-center">
                             {% include 'components/icons/calendar.svg.html.twig' with {c_color: task.isDone ? '' : '#b45309'} %}
                             <span class="pl-1  {{ task.isDone ? 'line-through text-gray-300' : 'text-amber-700' }}">
-                                {{ task.dueDate|date('M d') }}
+                                {{ task.dueDate|date('d. M', 'Europe/Berlin') ~ ' um ' ~ task.dueDate|date('H:i') ~ ' Uhr' }}
                             </span>
                         </div>
                     </div>
