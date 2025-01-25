@@ -31,12 +31,10 @@
                             {% include 'task/_task_item.html.twig' with { 'task': task } %}
                             {% if task.subTasks is not empty %}
                                 <div class="relative pl-10">
-                                    <!-- Vertical line that extends fully -->
                                     {% for subTask in task.subTasks %}
                                         <div class="relative">
                                             <div class="absolute left-[-9px] top-0 border-l-2 border-zinc-300
                                                     {% if loop.last %}h-1/2{% else %}h-full{% endif %}"></div>
-                                            <!-- Horizontal line that touches vertical line -->
                                             <div class="absolute left-[-9px] top-1/2 w-2 border-t-2 border-zinc-300"></div>
                                             {% include 'task/_task_item.html.twig' with { 'task': subTask } %}
                                         </div>
