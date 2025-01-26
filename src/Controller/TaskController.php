@@ -22,6 +22,11 @@ class TaskController extends AbstractController
         $task->setProject($project);
         $task->setParent($parent);
 
+        $time = new \DateTime();
+        $time->modify('+1 day');
+        $time->setTime($time->format('H'), 0);
+        $task->setDueDate($time);
+
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
@@ -35,7 +40,7 @@ class TaskController extends AbstractController
         return $this->render('task/new.html.twig', [
             'form' => $form,
             'project' => $project,
-            'parent' => $parent,
+            'task' => $task,
         ]);
     }
 
@@ -56,6 +61,7 @@ class TaskController extends AbstractController
         return $this->render('task/edit.html.twig', [
             'form' => $form,
             'task' => $task,
+            'initialTime' => $task->getDueDate()->format('H:i'),
         ]);
     }
 
