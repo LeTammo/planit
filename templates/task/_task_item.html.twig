@@ -1,8 +1,8 @@
-<div class="py-1">
+<div class="py-1 pr-2">
     <div class="px-2 rounded-sm shadow-[0_0_12px_1px_rgba(0,0,0,0.1)] {{ task.isDone ? 'bg-gray-100' : 'bg-white' }} task-container"
          data-task-id="{{ task.id }}">
         <div class="flex">
-            <div class="h-full m-auto px-4 flex items-center">
+            <div class="h-full m-auto px-4 flex items-center" onclick="toggleSubTasks({{ task.id }})">
                 {% if task.subTasks is empty %}
                     {% include 'task/_checkbox.html.twig' %}
                 {% else %}
@@ -40,7 +40,7 @@
         <div class="task-details hidden w-full pl-2 py-2 flex justify-between items-center">
             <div>
                 {% if task.description and not task.isDone %}
-                <span class="font-extralight text-gray-400">{{ task.description }}</span>
+                    <span class="font-extralight text-gray-400">{{ task.description }}</span>
                 {% endif %}
             </div>
             <div>
@@ -75,9 +75,23 @@
         const detailsElement = taskElement.querySelector('.task-details');
         detailsElement.classList.toggle('hidden');
     }
+
     function toggleSubTasks(taskId) {
-        const taskElement = document.querySelector(`.task-container[data-task-id="${taskId}"]`);
-        const subtasksElement = taskElement.parentElement.parentElement.querySelector('.subtasks');
-        subtasksElement.classList.toggle('hidden');
+        const taskGroup = document.querySelector(`.task-group[data-task-id="${taskId}"]`);
+        const subtasksElement = taskGroup.querySelector('.subtasks');
+
+        if (subtasksElement) {
+            if (subtasksElement.style.maxHeight === "0" || subtasksElement.style.maxHeight === "0px") {
+                subtasksElement.style.maxHeight = `${subtasksElement.scrollHeight}px`;
+            } else {
+                subtasksElement.style.maxHeight = "0";
+            }
+        }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.subtasks').forEach(subtasksElement => {
+            subtasksElement.style.maxHeight = `${subtasksElement.scrollHeight}px`;
+        });
+    });
 </script>

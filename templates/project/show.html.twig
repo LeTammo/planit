@@ -16,7 +16,7 @@
             </a>
         </div>
         <div>
-            <div class="px-2 border-t-2 border-b-2 hover:bg-gray-100 hover:shadow-inner">
+            <div class="px-2 mr-2 border-t-2 border-b-2 hover:bg-gray-100 hover:shadow-inner">
                 <a href="{{ path('app_task_new', {project: project.id}) }}">
                     <div class="py-2 flex items-center">
                         {% include 'components/icons/plus.svg.html.twig' %}
@@ -26,23 +26,9 @@
             </div>
             {% if project.tasks %}
                 {% for task in project.tasks %}
-                    <div class="relative mt-4">
-                        {% if task.parent is null %}
-                            {% include 'task/_task_item.html.twig' with { 'task': task } %}
-                            {% if task.subTasks is not empty %}
-                                <div class="subtasks relative pl-10">
-                                    {% for subTask in task.subTasks %}
-                                        <div class="relative">
-                                            <div class="absolute left-[-9px] top-0 border-l-2 border-zinc-300
-                                                    {% if loop.last %}h-1/2{% else %}h-full{% endif %}"></div>
-                                            <div class="absolute left-[-9px] top-1/2 w-2 border-t-2 border-zinc-300"></div>
-                                            {% include 'task/_task_item.html.twig' with { 'task': subTask } %}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        {% endif %}
-                    </div>
+                    {% if task.parent is null %}
+                        {% include 'task/_task.html.twig' with { 'task': task } %}
+                    {% endif %}
                 {% endfor %}
             {% endif %}
         </div>
