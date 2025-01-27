@@ -5,8 +5,13 @@ module.exports = {
     "./templates/**/*.html.twig",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'sans': ['Roboto', 'sans-serif'],
+        'roboto': ['Roboto', 'sans-serif'],
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms")],
-    darkMode: 'class',
+  darkMode: 'class',
 }

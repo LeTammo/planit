@@ -1,23 +1,4 @@
-@font-face {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 200; /* ExtraLight */
-    src: url('/fonts/Roboto-ExtraLight.tff') format('truetype');
-}
-
-@font-face {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 500; /* Medium */
-    src: url('/fonts/Roboto-Medium.tff') format('truetype');
-}
-
-@font-face {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 900; /* Black */
-    src: url('/fonts/Roboto-Black.tff') format('truetype');
-}
+@import 'fonts.css';
 
 @tailwind base;
 @tailwind components;
@@ -29,15 +10,13 @@
     }
 }
 
-
 /**
 colors:
 
-emerald-500: #10B981;
-sky-500: #0284c7;
-amber-500: #f59e0b;
-amber-600: #d97706;
-amber-700: #b45309;
-
+emerald-500:    #10B981;
+sky-500:        #0284c7;
+amber-500:      #f59e0b;
+amber-600:      #d97706;
+amber-700:      #b45309;
 
  */
