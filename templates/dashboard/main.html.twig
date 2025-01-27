@@ -34,6 +34,10 @@
                     </div>
                 </a>
                 {% include 'dashboard/_category.html.twig' with {
+                    c_category: 'Upcoming',
+                    c_elements: main_data.upcoming
+                } %}
+                {% include 'dashboard/_category.html.twig' with {
                     c_category: 'Tasks',
                     c_elements: main_data.tasks
                 } %}

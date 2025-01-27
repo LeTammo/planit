@@ -1,0 +1,74 @@
+{% extends 'dashboard/main.html.twig' %}
+
+{% block title %}{{ listTitle }}{% endblock %}
+
+{% block content %}
+    <div class="max-w-3xl">
+        <div class="pb-12 flex justify-between items-center">
+            <h1 class="pl-2 text-4xl font-bold">{{ listTitle }}</h1>
+            <div>{% block actions %}{% endblock %}</div>
+        </div>
+        <div>
+            {% block new_task %}{% endblock %}
+            {% if tasks %}
+                {% for task in tasks %}
+                    {% if task.parent is null %}
+                        {% include 'task/_task.html.twig' with { 'task': task } %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function restoreTaskStates() {
+            const taskStates = JSON.parse(localStorage.getItem('taskStates')) || {};
+            Object.keys(taskStates).forEach(taskId => {
+                const taskGroup = document.querySelector(`.task-group[data-task-id="${taskId}"]`);
+                if (!taskGroup) return;
+
+                const subtasks = taskGroup.querySelector('.subtasks');
+                if (subtasks && taskStates[taskId]) {
+                    subtasks.style.maxHeight = subtasks.scrollHeight + "px";
+                    document.querySelectorAll(`.task-group[data-task-id="${taskId}"] .collapse-icon`).forEach(icon => icon.classList.toggle('hidden'));
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            restoreTaskStates();
+        });
+
+        function toggleTaskDetails(taskId) {
+            const taskElement = document.querySelector(`.task-container[data-task-id="${taskId}"]`);
+            const detailsElement = taskElement.querySelector('.task-details');
+            detailsElement.classList.toggle('hidden');
+        }
+
+        function toggleSubTasks(taskId) {
+            const taskGroup = document.querySelector(`.task-group[data-task-id="${taskId}"]`);
+            const subtasksElement = taskGroup.querySelector('.subtasks');
+            const isExpanded = subtasksElement && subtasksElement.style.maxHeight !== "0px";
+
+            document.querySelectorAll(`.task-group[data-task-id="${taskId}"] .collapse-icon`).forEach(icon =>
+                icon.classList.toggle('hidden')
+            );
+
+            if (subtasksElement) {
+                if (isExpanded) {
+                    subtasksElement.style.maxHeight = "0px";
+                    saveTaskState(taskId, false);
+                } else {
+                    subtasksElement.style.maxHeight = subtasksElement.scrollHeight + "px";
+                    saveTaskState(taskId, true);
+                }
+            }
+        }
+
+        function saveTaskState(taskId, isExpanded) {
+            let taskStates = JSON.parse(localStorage.getItem('taskStates')) || {};
+            taskStates[taskId] = isExpanded;
+            localStorage.setItem('taskStates', JSON.stringify(taskStates));
+        }
+    </script>
+{% endblock %}

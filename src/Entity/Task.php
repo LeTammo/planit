@@ -93,6 +93,26 @@ class Task
         return $latestDueDate;
     }
 
+    public function getDueDateTimestamp(): int
+    {
+        return $this->getDueDate()->getTimestamp();
+    }
+
+    public function getDueDay(): string
+    {
+        return $this->getDueDate()->format('Y-m-d');
+    }
+
+    public function getDueDayTimestamp(): int
+    {
+        return (clone $this->getDueDate())->setTime(0, 0)->getTimestamp();
+    }
+
+    public function getDueTime(): string
+    {
+        return $this->getDueDate()->format('H:i');
+    }
+
     public function setDueDate(?\DateTimeInterface $dueDate): static
     {
         $this->dueDate = $dueDate;

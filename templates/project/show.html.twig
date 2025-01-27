@@ -1,88 +1,28 @@
-{% extends 'dashboard/main.html.twig' %}
+{% set listTitle = project.name %}
+{% set tasks = project.tasks %}
+
+{% extends 'task/list.html.twig' %}
 
 {% block title %}{{ project.name }}{% endblock %}
 
-{% block content %}
-    <div class="max-w-3xl">
-        <div class="pb-12 flex justify-between items-center">
-            <h1 class="pl-2 text-4xl font-bold">{{ project.name }}</h1>
-            <a href="{{ path('app_project_edit', {id: project.id}) }}">
-                <div class="mr-4 w-4 h-4">
-                    {% include 'components/icons/pen_square.svg.html.twig' with {
-                        c_size: 'w-6 h-6',
-                        c_color_hover: '#0284c7'
-                    } %}
-                </div>
-            </a>
+{% block actions %}
+    <a href="{{ path('app_project_edit', {id: project.id}) }}">
+        <div class="mr-4 w-4 h-4">
+            {% include 'components/icons/pen_square.svg.html.twig' with {
+                c_size: 'w-6 h-6',
+                c_color_hover: '#0284c7'
+            } %}
         </div>
-        <div>
-            <div class="px-2 mr-2 border-t-2 border-b-2 hover:bg-gray-100 hover:shadow-inner">
-                <a href="{{ path('app_task_new', {project: project.id}) }}">
-                    <div class="py-2 flex items-center">
-                        {% include 'components/icons/plus.svg.html.twig' %}
-                        <span class="ml-2 text-zinc-400">New Task</span>
-                    </div>
-                </a>
+    </a>
+{% endblock %}
+
+{% block new_task %}
+    <div class="px-2 mr-2 border-t-2 border-b-2 hover:bg-gray-100 hover:shadow-inner">
+        <a href="{{ path('app_task_new', {project: project.id}) }}">
+            <div class="py-2 flex items-center">
+                {% include 'components/icons/plus.svg.html.twig' %}
+                <span class="ml-2 text-zinc-400">New Task</span>
             </div>
-            {% if project.tasks %}
-                {% for task in project.tasks %}
-                    {% if task.parent is null %}
-                        {% include 'task/_task.html.twig' with { 'task': task } %}
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
+        </a>
     </div>
-
-    <script>
-        function restoreTaskStates() {
-            const taskStates = JSON.parse(localStorage.getItem('taskStates')) || {};
-            Object.keys(taskStates).forEach(taskId => {
-                const taskGroup = document.querySelector(`.task-group[data-task-id="${taskId}"]`);
-                if (!taskGroup) return;
-
-                const subtasks = taskGroup.querySelector('.subtasks');
-                if (subtasks && taskStates[taskId]) {
-                    subtasks.style.maxHeight = subtasks.scrollHeight + "px";
-                    document.querySelectorAll(`.task-group[data-task-id="${taskId}"] .collapse-icon`).forEach(icon => icon.classList.toggle('hidden'));
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            restoreTaskStates();
-        });
-
-        function toggleTaskDetails(taskId) {
-            const taskElement = document.querySelector(`.task-container[data-task-id="${taskId}"]`);
-            const detailsElement = taskElement.querySelector('.task-details');
-            detailsElement.classList.toggle('hidden');
-        }
-
-        function toggleSubTasks(taskId) {
-            const taskGroup = document.querySelector(`.task-group[data-task-id="${taskId}"]`);
-            const subtasksElement = taskGroup.querySelector('.subtasks');
-            const isExpanded = subtasksElement && subtasksElement.style.maxHeight !== "0px";
-
-            document.querySelectorAll(`.task-group[data-task-id="${taskId}"] .collapse-icon`).forEach(icon =>
-                icon.classList.toggle('hidden')
-            );
-
-            if (subtasksElement) {
-                if (isExpanded) {
-                    subtasksElement.style.maxHeight = "0px";
-                    saveTaskState(taskId, false);
-                } else {
-                    subtasksElement.style.maxHeight = subtasksElement.scrollHeight + "px";
-                    saveTaskState(taskId, true);
-                }
-            }
-        }
-
-        function saveTaskState(taskId, isExpanded) {
-            let taskStates = JSON.parse(localStorage.getItem('taskStates')) || {};
-            taskStates[taskId] = isExpanded;
-            localStorage.setItem('taskStates', JSON.stringify(taskStates));
-        }
-    </script>
 {% endblock %}

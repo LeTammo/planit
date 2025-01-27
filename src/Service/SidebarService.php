@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Project;
+use App\Entity\Task;
 use App\Entity\User;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 readonly class SidebarService
@@ -14,13 +16,21 @@ readonly class SidebarService
 
     public function getSidebarData(User $user): array
     {
+        $tasks = $user->getTasks();
+        $projects = $user->getProjects();
+
         return [
-            'projects' => $this->getProjectsData($user),
-            'tasks' => $this->getTasksData($user),
+            'projects' => $this->getProjectsData($projects),
+            'tasks' => $this->getTasksData($tasks),
+            'upcoming' => $this->getUpcomingData($tasks),
         ];
     }
 
-    private function getProjectsData(User $user): array
+    /**
+     * @param Collection<Project> $projects
+     * @return Project[]
+     */
+    private function getProjectsData(Collection $projects): array
     {
         return array_map(function(Project $project) {
             return [
@@ -31,33 +41,96 @@ readonly class SidebarService
                 'count' => $project->getTasks()->count(),
                 'link' => $this->urlGenerator->generate('app_project_show', ['id' => $project->getId()]),
             ];
-        }, $user->getProjects()->toArray());
+        }, $projects->toArray());
     }
 
-    private function getTasksData(User $user): array
+    /**
+     * @param Collection<Task> $tasks
+     * @return Task[]
+     */
+    private function getTasksData(Collection $tasks): array
     {
-        return [
-            [
-                'image_path' => 'images/list-check.svg',
-                'alt' => 'All Tasks',
-                'name' => 'All Tasks',
-                'count' => $user->getTasks()->count(),
-                'link' => '#',
-            ],
+        $data = [
             [
                 'image_path' => 'images/clock.svg',
                 'alt' => 'Open Tasks',
                 'name' => 'Open Tasks',
-                'count' => $user->getTasks()->filter(fn($task) => !$task->isDone())->count(),
-                'link' => '#',
+                'count' => $tasks->filter(fn($task) => !$task->isDone())->count(),
+                'link' => $this->urlGenerator->generate('app_task_open'),
             ],
             [
                 'image_path' => 'images/check.svg',
                 'alt' => 'Done Tasks',
                 'name' => 'Done Tasks',
-                'count' => $user->getTasks()->filter(fn($task) => $task->isDone())->count(),
-                'link' => '#',
+                'count' => $tasks->filter(fn($task) => $task->isDone())->count(),
+                'link' => $this->urlGenerator->generate('app_task_done'),
+            ],
+            [
+                'image_path' => 'images/list-check.svg',
+                'alt' => 'All Tasks',
+                'name' => 'All Tasks',
+                'count' => $tasks->count(),
+                'link' => $this->urlGenerator->generate('app_task_all'),
+            ],
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @param Collection<Task> $tasks
+     * @return Task[]
+     */
+    private function getUpcomingData(Collection $tasks): array
+    {
+        $today = (new \DateTime())->setTime(0, 0)->getTimestamp();
+        $tomorrow = (new \DateTime())->modify('+1 day')->setTime(0, 0)->getTimestamp();
+        $endOfWeek = (new \DateTime())->modify('next sunday')->setTime(0, 0)->getTimestamp();
+        $endOfNextWeek = (new \DateTime())->modify('next sunday')->modify('+1 week')->setTime(0, 0)->getTimestamp();
+
+        $data = [
+            [
+                'image_path' => 'images/calendar-check.svg',
+                'alt' => 'Today',
+                'name' => 'Today',
+                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() === $today)->count(),
+                'link' => $this->urlGenerator->generate('app_task_today'),
+            ],
+            [
+                'image_path' => 'images/calendar-check.svg',
+                'alt' => 'Tomorrow',
+                'name' => 'Tomorrow',
+                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() === $tomorrow)->count(),
+                'link' => $this->urlGenerator->generate('app_task_tomorrow'),
+            ],
+            [
+                'image_path' => 'images/calendar-check.svg',
+                'alt' => 'This Week',
+                'name' => 'This Week',
+                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() >= $today && $task->getDueDayTimestamp() <= $endOfWeek)->count(),
+                'link' => $this->urlGenerator->generate('app_task_this_week'),
+            ],
+            [
+                'image_path' => 'images/calendar-check.svg',
+                'alt' => 'Next Week',
+                'name' => 'Next Week',
+                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() >= $endOfWeek && $task->getDueDayTimestamp() <= $endOfNextWeek)->count(),
+                'link' => $this->urlGenerator->generate('app_task_next_week'),
             ]
         ];
+
+        $today = (new \DateTime())->setTime(0, 0)->getTimestamp();
+        $overdue = $tasks->filter(fn($task) => $task->getDueDate() && $task->getDueDayTimestamp() < $today && !$task->isDone())->count();
+        if ($overdue > 0) {
+            array_unshift($data, [
+                'image_path' => 'images/triangle-exclamation.svg',
+                'alt' => 'Overdue',
+                'name' => 'Overdue',
+                'count' => $overdue,
+                'link' => $this->urlGenerator->generate('app_task_overdue'),
+            ]);
+        }
+
+        return $data;
     }
 }
