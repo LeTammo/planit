@@ -14,7 +14,7 @@
                     <div class="w-8 rounded-full bg-zinc-300">
                         <img src="{{ asset('images/me_smol.jpg') }}" alt="Profile Picture" class="h-8 rounded-full">
                     </div>
-                    <span class="font-extralight text-zinc-500 dark:text-zinc-50 px-2">{{ app.user }}</span>
+                    <span class="font-extralight text-zinc-900 dark:text-zinc-50 px-2">{{ app.user }}</span>
                 </div>
                 <div>
                     <a href="{{ path('app_logout') }}">
@@ -50,7 +50,7 @@
     <div class="flex-1 p-4">
         <div class="mb-4 px-12 py-3 bg-white dark:bg-zinc-600 rounded-xl shadow-[0_0_12px_1px_rgba(0,0,0,0.1)]">
             <div class="flex items-center justify-between">
-                <div class="flex items center gap-12">
+                <div class="flex items center gap-12 font-bold">
                     <div class="flex items-center">
                         {% include 'components/icons/plus.svg.html.twig' %}
                         <span class="ml-2">Tasks</span>
