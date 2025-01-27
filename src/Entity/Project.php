@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
@@ -72,7 +74,11 @@ class Project
 
     public function getTasks(): Collection
     {
-        return $this->tasks;
+        $parentTasks = $this->tasks->filter(function($task) {
+            return $task->getParent() === null;
+        });
+
+        return $parentTasks->matching(Criteria::create()->orderBy(['dueDate' => Order::Ascending]));
     }
 
     public function addTask(Task $task): static
