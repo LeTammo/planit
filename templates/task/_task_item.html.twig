@@ -11,27 +11,34 @@
             </div>
             <div class="w-full">
                 <div class="w-full py-2 pl-2 flex justify-between">
-                    <div>
+                    <div class="flex items-center gap-2">
+                        {% if not task.isDone and task.parent is empty %}
+                            <div class="cursor-pointer" onclick="toggleTaskDetails({{ task.id }})">
+                                <img src="{{ asset('images/sort-amount-down.svg') }}" alt="Logout" class="w-4 h-4">
+                            </div>
+                        {% endif %}
                         <span class="font-bold cursor-pointer {{ task.isDone ? 'line-through text-gray-300' : '' }}"
                               onclick="toggleSubTasks({{ task.id }})">
                             {{ task.title }}
                         </span>
                     </div>
                     <div class="flex items-center">
-                        {% if not task.isDone and task.parent is empty %}
-                            <div class="px-3 cursor-pointer" onclick="toggleTaskDetails({{ task.id }})">
-                                <img src="{{ asset('images/sort-amount-down.svg') }}" alt="Logout" class="w-4 h-4">
-                            </div>
-                        {% endif %}
-                        {% include 'components/icons/calendar.svg.html.twig' with {c_color: task.isDone ? '' : '#1d4ed8'} %}
-                        <a href="{{ path('app_task_edit', {id: task.id}) }}">
-                            <span class="pl-1 {{ task.isDone ? 'line-through text-gray-300' : 'text-blue-700' }}">
+                        {% if task.subTasks is empty %}
+                            {% include 'components/icons/calendar.svg.html.twig' with {c_color: task.isDone ? '' : '#059669'} %}
+                            <a href="{{ path('app_task_edit', {id: task.id}) }}">
+                            <span class="pl-1 {{ task.isDone ? 'line-through text-gray-300' : 'text-emerald-600' }}">
                                 <span class="font-bold">{{ task.dueDate|date('d.m.') }}</span>
                                 um
                                 <span class="font-bold">{{ task.dueDate|date('H:i') }}</span>
                                 Uhr
                             </span>
-                        </a>
+                            </a>
+                        {% else %}
+                            <div class="pl-36 cursor-pointer" onclick="toggleSubTasks({{ task.id }})">
+                                <img src="{{ asset('images/chevron-down.svg') }}" alt="Logout" class="collapse-icon w-4 h-4">
+                                <img src="{{ asset('images/chevron-up.svg') }}" alt="Logout" class="collapse-icon w-4 h-4 hidden">
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -68,30 +75,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function toggleTaskDetails(taskId) {
-        const taskElement = document.querySelector(`.task-container[data-task-id="${taskId}"]`);
-        const detailsElement = taskElement.querySelector('.task-details');
-        detailsElement.classList.toggle('hidden');
-    }
-
-    function toggleSubTasks(taskId) {
-        const taskGroup = document.querySelector(`.task-group[data-task-id="${taskId}"]`);
-        const subtasksElement = taskGroup.querySelector('.subtasks');
-
-        if (subtasksElement) {
-            if (subtasksElement.style.maxHeight === "0" || subtasksElement.style.maxHeight === "0px") {
-                subtasksElement.style.maxHeight = `${subtasksElement.scrollHeight}px`;
-            } else {
-                subtasksElement.style.maxHeight = "0";
-            }
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.subtasks').forEach(subtasksElement => {
-            subtasksElement.style.maxHeight = `${subtasksElement.scrollHeight}px`;
-        });
-    });
-</script>
