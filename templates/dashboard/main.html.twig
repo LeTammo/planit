@@ -22,6 +22,7 @@
                     </a>
                 </div>
             </div>
+            <hr class="h-px mx-16 my-6 bg-gray-200 border-0 dark:bg-gray-700">
             <nav class="p-4">
                 {% include 'dashboard/_category.html.twig' with {
                     c_category: 'Projects',
@@ -33,10 +34,12 @@
                         <span class="ml-2 text-zinc-400">New Project</span>
                     </div>
                 </a>
+                <hr class="h-px mx-8 my-4 bg-gray-200 border-0 dark:bg-gray-700">
                 {% include 'dashboard/_category.html.twig' with {
                     c_category: 'Upcoming',
                     c_elements: main_data.upcoming
                 } %}
+                <hr class="h-px mx-8 my-4 bg-gray-200 border-0 dark:bg-gray-700">
                 {% include 'dashboard/_category.html.twig' with {
                     c_category: 'Tasks',
                     c_elements: main_data.tasks
