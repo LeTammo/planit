@@ -18,24 +18,36 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Project $project = null;
+
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dueDate = null;
-
     #[ORM\Column(nullable: true)]
     private ?array $tags = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $isDone = null;
+    #[ORM\Column(nullable: false)]
+    private ?bool $isDone = false;
 
-    #[ORM\ManyToOne(inversedBy: 'tasks')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Project $project = null;
+    #[ORM\Column(nullable: false)]
+    private ?bool $hasDate = true;
+
+    #[ORM\Column(nullable: false)]
+    private ?bool $hasRange = false;
+
+    #[ORM\Column(nullable: false)]
+    private ?bool $hasTime = false;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    private ?\DateTimeInterface $startDate = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
+    private ?\DateTimeInterface $endDate = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subTasks')]
     private ?self $parent = null;
@@ -45,12 +57,26 @@ class Task
 
     public function __construct()
     {
+        $this->endDate = (new \DateTime('tomorrow'))->setTime(10, 0);
+        $this->startDate = (new \DateTime('today'))->setTime(9, 0);
         $this->subTasks = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
+
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -61,7 +87,6 @@ class Task
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -73,50 +98,6 @@ class Task
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getDueDate(): ?\DateTimeInterface
-    {
-        if ($this->subTasks->isEmpty()) {
-            return $this->dueDate;
-        }
-
-        $latestDueDate = null;
-        foreach ($this->subTasks as $subTask) {
-            if (!$subTask->isDone() && ($subTask->getDueDate() < $latestDueDate || $latestDueDate === null)) {
-                $latestDueDate = $subTask->getDueDate();
-            }
-        }
-
-        return $latestDueDate;
-    }
-
-    public function getDueDateTimestamp(): int
-    {
-        return $this->getDueDate()->getTimestamp();
-    }
-
-    public function getDueDay(): string
-    {
-        return $this->getDueDate()->format('Y-m-d');
-    }
-
-    public function getDueDayTimestamp(): int
-    {
-        return (clone $this->getDueDate())->setTime(0, 0)->getTimestamp();
-    }
-
-    public function getDueTime(): string
-    {
-        return $this->getDueDate()->format('H:i');
-    }
-
-    public function setDueDate(?\DateTimeInterface $dueDate): static
-    {
-        $this->dueDate = $dueDate;
-
         return $this;
     }
 
@@ -154,16 +135,121 @@ class Task
         return $this;
     }
 
-    public function getProject(): ?Project
+    public function hasDate(): bool
     {
-        return $this->project;
+        return $this->hasDate;
     }
 
-    public function setProject(?Project $project): static
+    public function setHasDate(bool $hasDate): static
     {
-        $this->project = $project;
-
+        $this->hasDate = $hasDate;
         return $this;
+    }
+
+    public function hasRange(): bool
+    {
+        return $this->hasRange;
+    }
+
+    public function setHasRange(bool $hasRange): static
+    {
+        $this->hasRange = $hasRange;
+        return $this;
+    }
+
+    public function hasTime(): bool
+    {
+        return $this->hasTime;
+    }
+
+    public function setHasTime(bool $hasTime): static
+    {
+        $this->hasTime = $hasTime;
+        return $this;
+    }
+
+    public function getStartDate(): \DateTimeInterface
+    {
+        if ($this->subTasks->isEmpty()) {
+            return $this->startDate;
+        }
+
+        $earliestStartDate = null;
+        foreach ($this->subTasks as $subTask) {
+            if ($subTask->getStartDate() < $earliestStartDate || $earliestStartDate === null) {
+                $earliestStartDate = $subTask->getStartDate();
+            }
+        }
+
+        return $earliestStartDate;
+    }
+
+    public function setStartDate(\DateTimeInterface $startDate): static
+    {
+        $this->startDate = $startDate;
+        return $this;
+    }
+
+    public function getStartDateTimestamp(): int
+    {
+        return $this->getStartDate()->getTimestamp();
+    }
+
+    public function getStartDay(): string
+    {
+        return $this->getStartDate()->format('Y-m-d');
+    }
+
+    public function getStartTime(): string
+    {
+        return $this->getStartDate()->format('H:i');
+    }
+
+    public function getNormalizedStartDayTimestamp()
+    {
+        return $this->getStartDate()->setTime(0, 0)->getTimestamp();
+    }
+
+    public function getEndDate(): \DateTimeInterface
+    {
+        if ($this->subTasks->isEmpty()) {
+            return $this->endDate;
+        }
+
+        $latestEndDate = null;
+        foreach ($this->subTasks as $subTask) {
+            if ($subTask->getEndDate() > $latestEndDate || $latestEndDate === null) {
+                $latestEndDate = $subTask->getEndDate();
+            }
+        }
+
+        return $latestEndDate;
+    }
+
+    public function setEndDate(\DateTimeInterface $endDate): static
+    {
+        $this->endDate = $endDate;
+        return $this;
+    }
+
+    public function getEndDateTimestamp(): int
+    {
+        return $this->getEndDate()->getTimestamp();
+    }
+
+    public function getEndDay(): string
+    {
+        return $this->getEndDate()->format('Y-m-d');
+    }
+
+    public function getEndTime(): string
+    {
+        return $this->getEndDate()->format('H:i');
+    }
+
+    public function getNormalizedEndDayTimestamp()
+    {
+        return $this->getEndDate()->setTime(0, 0)->getTimestamp();
     }
 
     public function getParent(): ?self
@@ -180,7 +266,7 @@ class Task
 
     public function getSubTasks(): Collection
     {
-        $criteria = Criteria::create()->orderBy(['dueDate' => Order::Ascending]);
+        $criteria = Criteria::create()->orderBy(['startDate' => Order::Ascending]);
 
         return $this->subTasks->matching($criteria);
     }

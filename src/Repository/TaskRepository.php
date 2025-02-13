@@ -19,10 +19,21 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * @return Task[] Returns an array of Task objects
      */
-    public function findSortedByDueDate(): array
+    public function findSortedByStartDate(): array
     {
         return $this->createQueryBuilder('t')
-            ->orderBy('t.dueDate', 'ASC')
+            ->orderBy('t.startDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Task[] Returns an array of Task objects
+     */
+    public function findSortedByEndDate(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.endDate', 'ASC')
             ->getQuery()
             ->getResult();
     }

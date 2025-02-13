@@ -93,34 +93,34 @@ readonly class SidebarService
                 'image_path' => 'images/calendar-check.svg',
                 'alt' => 'Today',
                 'name' => 'Today',
-                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() === $today)->count(),
+                'count' => $tasks->filter(fn($task) => $task->getNormalizedStartDayTimestamp() === $today)->count(),
                 'link' => $this->urlGenerator->generate('app_task_today'),
             ],
             [
                 'image_path' => 'images/calendar-check.svg',
                 'alt' => 'Tomorrow',
                 'name' => 'Tomorrow',
-                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() === $tomorrow)->count(),
+                'count' => $tasks->filter(fn($task) => $task->getNormalizedStartDayTimestamp() === $tomorrow)->count(),
                 'link' => $this->urlGenerator->generate('app_task_tomorrow'),
             ],
             [
                 'image_path' => 'images/calendar-check.svg',
                 'alt' => 'This Week',
                 'name' => 'This Week',
-                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() >= $today && $task->getDueDayTimestamp() <= $endOfWeek)->count(),
+                'count' => $tasks->filter(fn($task) => $task->getNormalizedStartDayTimestamp() >= $today && $task->getNormalizedStartDayTimestamp() <= $endOfWeek)->count(),
                 'link' => $this->urlGenerator->generate('app_task_this_week'),
             ],
             [
                 'image_path' => 'images/calendar-check.svg',
                 'alt' => 'Next Week',
                 'name' => 'Next Week',
-                'count' => $tasks->filter(fn($task) => $task->getDueDayTimestamp() >= $endOfWeek && $task->getDueDayTimestamp() <= $endOfNextWeek)->count(),
+                'count' => $tasks->filter(fn($task) => $task->getNormalizedStartDayTimestamp() >= $endOfWeek && $task->getNormalizedStartDayTimestamp() <= $endOfNextWeek)->count(),
                 'link' => $this->urlGenerator->generate('app_task_next_week'),
             ]
         ];
 
         $today = (new \DateTime())->setTime(0, 0)->getTimestamp();
-        $overdue = $tasks->filter(fn($task) => $task->getDueDate() && $task->getDueDayTimestamp() < $today && !$task->isDone())->count();
+        $overdue = $tasks->filter(fn($task) => $task->getEndDateTimestamp() < $today && !$task->isDone())->count();
         if ($overdue > 0) {
             array_unshift($data, [
                 'image_path' => 'images/triangle-exclamation.svg',

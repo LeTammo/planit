@@ -78,7 +78,7 @@ class Project
             return $task->getParent() === null;
         });
 
-        return $parentTasks->matching(Criteria::create()->orderBy(['dueDate' => Order::Ascending]));
+        return $parentTasks->matching(Criteria::create()->orderBy(['startDate' => Order::Ascending]));
     }
 
     public function addTask(Task $task): static

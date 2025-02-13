@@ -1,0 +1,239 @@
+{% extends 'dashboard/main.html.twig' %}
+
+{% block title %}
+    {{ task.id ? task.title : 'Create' }}
+    {{ task.parent is not null ? 'Subtask' : 'Task' }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/flowbite.min.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white shadow-md rounded-lg p-6">
+            <h1 class="text-2xl font-bold mb-6">
+                {{ task.id ? 'Edit' : 'Create' }}
+                {{ task.parent is not null ? 'Subtask' : 'Task' }}
+            </h1>
+
+            {% if task.parent is not null %}
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h2 class="font-medium text-gray-700">Parent Task:</h2>
+                    <p class="text-gray-600">{{ task.parent.title }}</p>
+                </div>
+            {% endif %}
+
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+
+            <div class="flex space-x-4 mb-4 justify-center">
+                <button type="button" id="btnToggleDate" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-blue-400 {{ task.hasDate ? 'bg-blue-500 text-white' : 'bg-white text-gray-700' }}">
+                    Date
+                </button>
+                {{ form_widget(form.hasDate, {'attr': {'class': 'hidden task-toggle','checked': task.hasDate, 'value': task.hasDate ? 1 : 0}}) }}
+                <button type="button" id="btnToggleRange" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-blue-400 {{ task.hasRange ? 'bg-blue-500 text-white' : 'bg-white text-gray-700' }}">
+                    Range
+                </button>
+                {{ form_widget(form.hasRange, {'attr': {'class': 'hidden task-toggle','checked': task.hasRange, 'value': task.hasRange ? 1 : 0}}) }}
+                <button type="button" id="btnToggleTime" class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-blue-400 {{ task.hasTime ? 'bg-blue-500 text-white' : 'bg-white text-gray-700' }}">
+                    Time
+                </button>
+                {{ form_widget(form.hasTime, {'attr': {'class': 'hidden task-toggle','checked': task.hasTime, 'value': task.hasTime ? 1 : 0}}) }}
+            </div>
+
+            <div id="dateSection" class="date-fields space-y-6">
+                <div id="daySection" class="pt-4">
+                    <div class="flex justify-center sm:flex-row flex-col sm:space-x-5 rtl:space-x-reverse">
+                        <div id="startDaySection" class="{{ task.hasRange ? '' : 'hidden' }}">
+                            <label class="hidden block text-sm font-medium text-gray-700 mb-2">Start Day</label>
+                            <div id="startDayPicker"
+                                 inline-datepicker
+                                 datepicker-buttons
+                                 datepicker-autoselect-today
+                                 class="mx-auto sm:mx-0"
+                                 data-date="{{ task.startDate|date('m/d/Y') }}">
+                            </div>
+                            {{ form_widget(form.startDate, {'attr': {'class': 'hidden'}}) }}
+                        </div>
+                        <div id="endDaySection" class="">
+                            <label class="hidden block text-sm font-medium text-gray-700 mb-2">End Day</label>
+                            <div id="endDayPicker"
+                                 inline-datepicker
+                                 datepicker-buttons
+                                 datepicker-autoselect-today
+                                 class="mx-auto sm:mx-0"
+                                 data-date="{{ task.endDate|date('m/d/Y') }}">
+                            </div>
+                            {{ form_widget(form.endDate, {'attr': {'class': 'hidden'}}) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="timeSection" class="pt-4 {{ task.hasTime ? '' : 'hidden' }}">
+                    <div class="flex justify-center sm:flex-row flex-col sm:space-x-5 rtl:space-x-reverse">
+                        <div id="startTimeSection" class="{{ task.hasRange and task.hasTime ? '' : 'hidden' }}">
+                            <label class="hidden block text-sm font-medium text-gray-700 mb-2">Start Time</label>
+                            <div class="w-full mt-5 sm:mt-0">
+                                <ul id="startTimePicker" class="grid w-full grid-cols-2 gap-2">
+                                    {% for time in ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"] %}
+                                        <li>
+                                            <input type="radio" id="start_{{ time }}" value="{{ time }}" class="hidden peer" name="startTime" {{ task.startDate|date('H:i') == time ? 'checked' : '' }}>
+                                            <label for="start_{{ time }}"
+                                                   class="inline-flex items-center justify-center w-full p-2 px-8 text-sm font-medium text-center bg-white border rounded-lg cursor-pointer border-gray-300 dark:hover:text-white dark:border-blue-500 dark:peer-checked:border-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-500 hover:text-white peer-checked:text-white hover:bg-blue-400 dark:text-blue-500 dark:bg-gray-900 dark:hover:bg-blue-500 dark:hover:border-blue-600 dark:peer-checked:bg-blue-500">
+                                                {{ time }}
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="endTimeSection" class="{{ task.hasTime ? '' : 'hidden' }}">
+                            <label class="hidden block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                            <div class="w-full mt-5 sm:mt-0">
+                                <ul id="endTimePicker" class="grid w-full grid-cols-2 gap-2">
+                                    {% for time in ["07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00"] %}
+                                        <li>
+                                            <input type="radio" id="end_{{ time }}" value="{{ time }}" class="hidden peer" name="endTime" {{ task.endDate|date('H:i') == time ? 'checked' : '' }}>
+                                            <label for="end_{{ time }}"
+                                                   class="inline-flex items-center justify-center w-full p-2 px-8 text-sm font-medium text-center bg-white border rounded-lg cursor-pointer border-gray-300 dark:hover:text-white dark:border-blue-500 dark:peer-checked:border-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-500 hover:text-white peer-checked:text-white hover:bg-blue-400 dark:text-blue-500 dark:bg-gray-900 dark:hover:bg-blue-500 dark:hover:border-blue-600 dark:peer-checked:bg-blue-500">
+                                                {{ time }}
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_row(form.tags) }}
+
+            {% if task.id %}
+                <div class="flex justify-between">
+                    <button type="button"
+                            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                            onclick="return confirm('Are you sure you want to delete this task?') && document.getElementById('delete-form').submit();">
+                        Delete {{ task.parent is not null ? 'Subtask' : 'Task' }}
+                    </button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                        Save Changes
+                    </button>
+                </div>
+            {% else %}
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-500">
+                        Create {{ task.parent is not null ? 'Subtask' : 'Task' }}
+                    </button>
+                </div>
+            {% endif %}
+            {{ form_end(form) }}
+
+            {% if task.id %}
+                <form id="delete-form" action="{{ path('app_task_delete', {id: task.id}) }}" method="post" class="hidden">
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="{{ asset('js/flowbite.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.querySelector('#task_startDate');
+            const endDateInput = document.querySelector('#task_endDate');
+
+            const dateSection = document.querySelector('#dateSection');
+            const daySection = document.querySelector('#daySection');
+            const timeSection = document.querySelector('#timeSection');
+
+            const startDaySection = document.querySelector('#startDaySection');
+            const startDayPicker = document.querySelector('#startDayPicker');
+            const startTimeSection = document.querySelector('#startTimeSection');
+            const startTimePicker = document.querySelector('#startTimePicker');
+
+            const endDaySection = document.querySelector('#endDaySection');
+            const endDayPicker = document.querySelector('#endDayPicker');
+            const endTimeSection = document.querySelector('#endTimeSection');
+            const endTimePicker = document.querySelector('#endTimePicker');
+
+            const btnToggleDate = document.querySelector('#btnToggleDate');
+            const btnToggleRange = document.querySelector('#btnToggleRange');
+            const btnToggleTime = document.querySelector('#btnToggleTime');
+            const inputHasDate = document.querySelector('#{{ form.hasDate.vars.id }}');
+            const inputHasRange = document.querySelector('#{{ form.hasRange.vars.id }}');
+            const inputHasTime = document.querySelector('#{{ form.hasTime.vars.id }}');
+
+            function updateDateInput(dateInput, date, time) {
+                if (!date || !time) return;
+                const [hours, minutes] = time.split(':');
+                date.setHours(hours - date.getTimezoneOffset() / 60, minutes, 0, 0);
+                dateInput.value = date.toISOString().slice(0, 16);
+            }
+
+            endDayPicker.addEventListener('changeDate', function(e) {
+                const date = new Date(e.detail.date);
+                const time = document.querySelector('#endTimePicker input:checked')?.value;
+                updateDateInput(endDateInput, date, time);
+            });
+
+            startDayPicker.addEventListener('changeDate', function(e) {
+                const date = new Date(e.detail.date);
+                const time = document.querySelector('#startTimePicker input:checked')?.value;
+                updateDateInput(startDateInput, date, time);
+            });
+
+            document.querySelector('#endTimePicker').addEventListener('change', function(e) {
+                const date = new Date(endDateInput.value || new Date());
+                updateDateInput(endDateInput, date, e.target.value);
+            });
+
+            document.querySelector('#startTimePicker').addEventListener('change', function(e) {
+                const date = new Date(startDateInput.value || new Date());
+                updateDateInput(startDateInput, date, e.target.value);
+            });
+
+            btnToggleTime.addEventListener('click', function() {
+                toggleInput(inputHasTime);
+                timeSection.classList.toggle('hidden');
+                startTimeSection.classList.toggle('hidden');
+                endTimeSection.classList.toggle('hidden');
+
+                btnToggleTime.classList.toggle('bg-white');
+                btnToggleTime.classList.toggle('bg-blue-500');
+                btnToggleTime.classList.toggle('text-white');
+            });
+
+            btnToggleRange.addEventListener('click', function() {
+                toggleInput(inputHasRange);
+                startDaySection.classList.toggle('hidden');
+                startTimeSection.classList.toggle('hidden');
+
+                btnToggleRange.classList.toggle('bg-white');
+                btnToggleRange.classList.toggle('bg-blue-500');
+                btnToggleRange.classList.toggle('text-white');
+            });
+
+            btnToggleDate.addEventListener('click', function() {
+                toggleInput(inputHasDate);
+                dateSection.classList.toggle('hidden');
+
+                btnToggleDate.classList.toggle('bg-white');
+                btnToggleDate.classList.toggle('bg-blue-500');
+                btnToggleDate.classList.toggle('text-white');
+
+                if (inputHasDate.value === 0) {
+                    btnToggleTime.click();
+                    btnToggleRange.click();
+                }
+            });
+
+            function toggleInput(input) {
+                input.checked = !input.checked;
+                input.value = input.value === "1" ? "0" : "1";
+            }
+        });
+    </script>
+{% endblock %}

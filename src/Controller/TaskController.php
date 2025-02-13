@@ -22,11 +22,6 @@ class TaskController extends AbstractController
         $task->setProject($project);
         $task->setParent($parent);
 
-        $time = new \DateTime();
-        $time->modify('+1 day');
-        $time->setTime($time->format('H'), 0);
-        $task->setDueDate($time);
-
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
@@ -37,10 +32,10 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('app_project_show', ['id' => $project->getId()]);
         }
 
-        return $this->render('task/new.html.twig', [
+        return $this->render('task/form.html.twig', [
             'form' => $form,
-            'project' => $project,
             'task' => $task,
+            'project' => $project,
         ]);
     }
 
@@ -58,10 +53,9 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('app_project_show', ['id' => $task->getProject()->getId()]);
         }
 
-        return $this->render('task/edit.html.twig', [
+        return $this->render('task/form.html.twig', [
             'form' => $form,
             'task' => $task,
-            'initialTime' => $task->getDueDate()->format('H:i'),
         ]);
     }
 
@@ -134,7 +128,7 @@ class TaskController extends AbstractController
         $today = (new \DateTime())->setTime(0, 0)->getTimestamp();
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks->filter(fn(Task $task) => $task->getDueDate() && $task->getDueDayTimestamp() < $today && !$task->isDone()),
+            'tasks' => $tasks->filter(fn(Task $task) => $task->getStartDateTimestamp() < $today && !$task->isDone()),
             'listTitle' => 'Overdue',
         ]);
     }
@@ -146,7 +140,7 @@ class TaskController extends AbstractController
         $today = (new \DateTime())->setTime(0, 0)->getTimestamp();
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks->filter(fn(Task $task) => $task->getDueDate() && $task->getDueDayTimestamp() == $today),
+            'tasks' => $tasks->filter(fn(Task $task) => $task->getNormalizedStartDayTimestamp() == $today),
             'listTitle' => 'Today',
         ]);
     }
@@ -158,7 +152,7 @@ class TaskController extends AbstractController
         $tomorrow = (new \DateTime())->setTime(0, 0)->modify('+1 day')->getTimestamp();
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks->filter(fn(Task $task) => $task->getDueDate() && $task->getDueDayTimestamp() == $tomorrow),
+            'tasks' => $tasks->filter(fn(Task $task) => $task->getNormalizedStartDayTimestamp() == $tomorrow),
             'listTitle' => 'Tomorrow',
         ]);
     }
@@ -171,7 +165,7 @@ class TaskController extends AbstractController
         $endOfWeek = (new \DateTime())->modify('next sunday')->setTime(0, 0)->getTimestamp();
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks->filter(fn(Task $task) => $task->getDueDate() && $task->getDueDayTimestamp() >= $today && $task->getDueDayTimestamp() <= $endOfWeek),
+            'tasks' => $tasks->filter(fn(Task $task) => $task->getNormalizedStartDayTimestamp() >= $today && $task->getNormalizedStartDayTimestamp() <= $endOfWeek),
             'listTitle' => 'This Week',
         ]);
     }
@@ -184,7 +178,7 @@ class TaskController extends AbstractController
         $endOfNextWeek = (new \DateTime())->modify('next sunday')->modify('+1 week')->setTime(0, 0)->getTimestamp();
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks->filter(fn(Task $task) => $task->getDueDate() && $task->getDueDayTimestamp() >= $endOfWeek && $task->getDueDayTimestamp() <= $endOfNextWeek),
+            'tasks' => $tasks->filter(fn(Task $task) => $task->getNormalizedStartDayTimestamp() >= $endOfWeek && $task->getNormalizedStartDayTimestamp() <= $endOfNextWeek),
             'listTitle' => 'Next Week',
         ]);
     }
